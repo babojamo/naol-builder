@@ -1,0 +1,181 @@
+{
+  "class": {
+    "id": 2246,
+    "name": "Blade",
+    "type": "professional",
+    "tree": "Blade.png",
+    "parent": 764,
+    "icon": "blade.png",
+    "minLevel": 60,
+    "maxLevel": 165,
+    "hp": 1.5,
+    "maxHP": "150+level*30+sta*level*0.3",
+    "fp": 1.2,
+    "maxFP": "level*2.4+sta*8.400001",
+    "mp": 0.6,
+    "maxMP": "22+level*1.2+int*5.4",
+    "defense": 1.45,
+    "magicDefenseStaFactor": 1.6,
+    "magicDefenseIntFactor": 2.3,
+    "attackSpeed": 87,
+    "block": 1.2,
+    "critical": 1,
+    "autoAttackFactors": {
+      "sword": 4.7,
+      "axe": 5.7,
+      "staff": 0.8,
+      "stick": 4,
+      "knuckle": 5,
+      "yoyo": 4.2,
+      "bow": 2.8,
+      "wand": 5.5
+    },
+    "description": ""
+  },
+  "monster": {
+    "id": 3403,
+    "name": "Giant Aibatt",
+    "event": false,
+    "levelHidden": false,
+    "level": 5,
+    "rank": "giant",
+    "area": "normal",
+    "element": "fire",
+    "booty": 7635,
+    "flying": false,
+    "hp": 14326,
+    "mp": 0,
+    "minAttack": 182,
+    "maxAttack": 205,
+    "defense": 10,
+    "magicDefense": 5,
+    "sta": 5,
+    "str": 15,
+    "dex": 23,
+    "int": 20,
+    "hitRate": 60,
+    "parry": 9,
+    "runaway": false,
+    "resistFire": 0,
+    "resistWater": -0.3,
+    "resistWind": 0.3,
+    "resistEarth": 0,
+    "resistElectricity": 0,
+    "recoveryThresholdHP": 10,
+    "recoveryAmountHP": 50,
+    "experience": 26.3158,
+    "experienceSharing": "normal",
+    "speed": 75,
+    "icon": "aibatt1.png",
+    "minDropGold": 85,
+    "maxDropGold": 120,
+    "attacks": [
+      {
+        "minAttack": 182,
+        "maxAttack": 191,
+        "attackRange": 2,
+        "target": "single"
+      },
+      {
+        "minAttack": 189,
+        "maxAttack": 200,
+        "attackRange": 2,
+        "target": "single"
+      },
+      {
+        "minAttack": 194,
+        "maxAttack": 205,
+        "attackRange": 2,
+        "target": "single"
+      },
+      {
+        "minAttack": 194,
+        "maxAttack": 205,
+        "attackRange": 2,
+        "target": "single"
+      }
+    ],
+    "description": ""
+  },
+  "upgrade": {
+    "upgradeLevel": 8,
+    "weaponAttack": 19,
+    "helmetDefense": 16,
+    "suitDefense": 16,
+    "gauntletDefense": 16,
+    "bootsDefense": 16,
+    "shieldDefense": 16,
+    "elementAttack": 7.61,
+    "elementAttackStrong": 11.01,
+    "elementDefense": 7.61,
+    "setAbilities": [
+      {
+        "parameter": "hitrate",
+        "add": 30,
+        "rate": true
+      },
+      {
+        "parameter": "block",
+        "add": 10,
+        "rate": true
+      },
+      {
+        "parameter": "maxhp",
+        "add": 10,
+        "rate": true
+      },
+      {
+        "parameter": "allstats",
+        "add": 6,
+        "rate": false
+      },
+      {
+        "parameter": "attack",
+        "add": 3,
+        "rate": true
+      }
+    ],
+    "name": "",
+    "description": ""
+  },
+  "item": {
+    "id": 8767,
+    "name": "Legendary Golden Axe",
+    "description": "null",
+    "icon": "weaaxelegendg.png",
+    "class": 764,
+    "level": 105,
+    "element": "none",
+    "minAttack": 320,
+    "maxAttack": 322,
+    "abilities": [
+      {
+        "parameter": "criticaldamage",
+        "add": 30,
+        "rate": true
+      },
+      {
+        "parameter": "criticalchance",
+        "add": 15,
+        "rate": true
+      }
+    ],
+    "category": "weapon",
+    "subcategory": "axe",
+    "rarity": "unique",
+    "stack": 1,
+    "sellPrice": 100000,
+    "attackSpeed": "normal",
+    "attackSpeedValue": 0.06,
+    "attackRange": 2,
+    "twoHanded": false,
+    "additionalSkillDamage": 0,
+    "ultimateConvertible": false,
+    "consumable": false,
+    "premium": false,
+    "shining": false,
+    "tradable": true,
+    "deletable": true,
+    "durationRealTime": false
+  }
+}

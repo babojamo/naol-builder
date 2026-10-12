@@ -1,0 +1,2 @@
+import { sync } from '../../../lib/flyff-server';
+export async function POST(request:Request){if(!request.headers.get('oai-authenticated-user-id'))return Response.json({error:'Sign in with ChatGPT to request a data check.'},{status:401});if(request.headers.get('origin')!==new URL(request.url).origin)return Response.json({error:'Origin mismatch'},{status:403});try{return Response.json(await sync());}catch{return Response.json({error:'Flyff data synchronization is temporarily unavailable. Cached data is being used.'},{status:503});}}

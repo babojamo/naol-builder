@@ -1,0 +1,2 @@
+import { build } from 'esbuild';import { spawnSync } from 'node:child_process';import {mkdirSync} from 'node:fs';
+mkdirSync('work',{recursive:true});await build({entryPoints:['tests/combat.test.ts'],outfile:'work/combat.test.mjs',bundle:true,platform:'node',format:'esm',target:'node22'});const r=spawnSync(process.execPath,['--test','work/combat.test.mjs'],{stdio:'inherit'});process.exit(r.status??1);
