@@ -5,8 +5,8 @@ export const metadata: Metadata = {
   title: "NAOL Build · Flyff Universe Build Optimizer",
   description: "Build it. Simulate it. Optimize it. A character laboratory powered by official Flyff Universe data.",
   icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
+    icon: { url: "/naol-favicon.png", type: "image/png" },
+    shortcut: "/naol-favicon.png",
   },
 };
 
