@@ -14,6 +14,144 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_audit_log: {
+        Row: {
+          action: string
+          admin_user_id: string
+          after_data: Json
+          before_data: Json
+          created_at: string
+          id: string
+          target_user_id: string
+        }
+        Insert: {
+          action: string
+          admin_user_id: string
+          after_data?: Json
+          before_data?: Json
+          created_at?: string
+          id?: string
+          target_user_id: string
+        }
+        Update: {
+          action?: string
+          admin_user_id?: string
+          after_data?: Json
+          before_data?: Json
+          created_at?: string
+          id?: string
+          target_user_id?: string
+        }
+        Relationships: []
+      }
+      ai_build_imports: {
+        Row: {
+          build_id: string | null
+          completed_at: string | null
+          created_at: string
+          error_code: string | null
+          error_message: string | null
+          id: string
+          image_count: number
+          model_used: string | null
+          normalized_json: Json | null
+          result_json: Json | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          build_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          error_code?: string | null
+          error_message?: string | null
+          id?: string
+          image_count: number
+          model_used?: string | null
+          normalized_json?: Json | null
+          result_json?: Json | null
+          status: string
+          user_id: string
+        }
+        Update: {
+          build_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          error_code?: string | null
+          error_message?: string | null
+          id?: string
+          image_count?: number
+          model_used?: string | null
+          normalized_json?: Json | null
+          result_json?: Json | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      ai_user_quotas: {
+        Row: {
+          ai_enabled: boolean
+          updated_at: string
+          usage_limit: number
+          usage_used: number
+          user_id: string
+        }
+        Insert: {
+          ai_enabled?: boolean
+          updated_at?: string
+          usage_limit?: number
+          usage_used?: number
+          user_id: string
+        }
+        Update: {
+          ai_enabled?: boolean
+          updated_at?: string
+          usage_limit?: number
+          usage_used?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      app_admin_invites: {
+        Row: {
+          claimed_at: string | null
+          claimed_by: string | null
+          created_at: string
+          email: string
+        }
+        Insert: {
+          claimed_at?: string | null
+          claimed_by?: string | null
+          created_at?: string
+          email: string
+        }
+        Update: {
+          claimed_at?: string | null
+          claimed_by?: string | null
+          created_at?: string
+          email?: string
+        }
+        Relationships: []
+      }
+      app_admins: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       builds: {
         Row: {
           build_data: Json
@@ -147,6 +285,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      flyff_fashion_blessing_rules: {
+        Row: {
+          active: boolean
+          appearance_probability: number
+          blessing_type: string
+          created_at: string
+          effective_from: string
+          game_version: string
+          id: number
+          parameter: string
+          source_reference: string
+          updated_at: string
+          value: number
+          value_probability: number
+        }
+        Insert: {
+          active?: boolean
+          appearance_probability: number
+          blessing_type: string
+          created_at?: string
+          effective_from: string
+          game_version: string
+          id?: number
+          parameter: string
+          source_reference: string
+          updated_at?: string
+          value: number
+          value_probability: number
+        }
+        Update: {
+          active?: boolean
+          appearance_probability?: number
+          blessing_type?: string
+          created_at?: string
+          effective_from?: string
+          game_version?: string
+          id?: number
+          parameter?: string
+          source_reference?: string
+          updated_at?: string
+          value?: number
+          value_probability?: number
+        }
+        Relationships: []
       }
       flyff_generations: {
         Row: {
@@ -282,7 +465,25 @@ export type Database = {
         Args: { p_generation: string }
         Returns: undefined
       }
+      admin_apply_ai_quota: {
+        Args: {
+          p_action: string
+          p_admin: string
+          p_target: string
+          p_value?: number
+        }
+        Returns: Json
+      }
+      admin_dashboard: { Args: { p_admin: string }; Returns: Json }
       claim_flyff_sync: { Args: never; Returns: boolean }
+      claim_verified_admin: {
+        Args: { p_email: string; p_user: string }
+        Returns: boolean
+      }
+      complete_ai_build_import: {
+        Args: { p_import_id: string; p_normalized?: Json; p_result: Json }
+        Returns: undefined
+      }
       consume_verification: { Args: { p_hash: string }; Returns: boolean }
       get_shared_build: {
         Args: { p_key: string }
@@ -297,6 +498,22 @@ export type Database = {
       issue_verification: {
         Args: { p_email: string; p_hash: string; p_user: string }
         Returns: undefined
+      }
+      refund_ai_build_import: {
+        Args: {
+          p_error_code: string
+          p_error_message: string
+          p_import_id: string
+        }
+        Returns: undefined
+      }
+      reserve_ai_build_usage: {
+        Args: { p_image_count: number; p_model: string; p_user_id: string }
+        Returns: {
+          import_id: string
+          usage_limit: number
+          usage_used: number
+        }[]
       }
       save_build: {
         Args: {

@@ -5,3 +5,9 @@ verify_jwt = false
 verify_jwt = false
 [functions.sync-flyff]
 verify_jwt = false
+
+[functions.analyze-character]
+verify_jwt = false
+
+[functions.admin-console]
+verify_jwt = false
