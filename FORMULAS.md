@@ -20,43 +20,43 @@ Base attack/defense, upgrade percentages, abilities and set membership come from
 
 Source: inferred · Confidence: low · Status: experimental
 
-Weapon attack × 2 + class autoAttackFactor × primary stat + level × 2, then weapon upgrade and attack abilities. Defense = armor + STA × class defense + level. Each hand contributes independently; attack-cycle timing remains an explicit estimate.
+Weapon-family-specific offsets, class autoAttackFactors and level factors produce a min/max range. Bow also uses STR. API upgrade coefficients and the upgrade-level power term are applied once per hand. Target-effective defense is calculated for physical auto, skill, wand and magic contexts; nonlinear attack/defense interpolation replaces direct subtraction. Character sheet defense remains a separately labeled estimate.
 
 ## Hit probability
 
 Source: experimental · Confidence: low · Status: experimental
 
-Clamp(hitBase + (attacker hitRate − target DEX − target parry) × dexHitFactor + level difference × levelHitFactor, 5%, 96%). Attacker base hit rating = level + DEX. Defaults: 75, 0.2, 1.
+Hit is based on attacker rating / (rating + defender parry), with separate player→monster, monster→player and PvP level factors. Final hit probability is bounded to 20–96%. Player parry starts at floor(DEX / 2) plus bonuses. Legacy calibration fields remain loadable but no longer drive production hit calculations.
 
 ## Critical / attack speed / block
 
 Source: inferred · Confidence: low · Status: experimental
 
-Crit = floor(DEX / 10) × class critical + bonuses. Critical multiplier starts at 200%. Speed = class attackSpeed + DEX × 0.1 + bonuses, capped at 100. Base block = DEX × class block / 10. These equations have not been validated.
+Crit uses final DEX and class critical. Target Critical Resist scales that chance. Critical multipliers have context-dependent ranges sampled by Monte Carlo and averaged analytically. Attack speed uses class speed, API weapon attackSpeedValue, DEX, level, a nonlinear conversion and discrete progression, followed by attack speed/rate bonuses. Display is internal speed × 50. Sheet block and target-effective block are distinct; effective block includes DEX/level/class, attack family, rank, discrete outcome bounds and multiplicative penetration. Game timing/calibration fixtures are still required.
 
 ## Element modifier
 
 Source: experimental · Confidence: low · Status: experimental
 
-1 + API elementAttack × elementScale × (1 − API resistance). Default elementScale = 0.01. Resistance units and strong/same-element mechanics are unverified. elementAttackStrong is retained but not applied.
+A centralized none/same/weak/strong relationship matrix uses API elementAttack, elementAttackStrong and elementDefense upgrade rows. Skills use their element, mastery families, target resistance and weapon/skill matching. Infusion only changes element when explicitly configured active. Legacy elementScale is retained for saved-build compatibility and does not drive production formulas.
 
 ## PvE / PvP / bosses
 
 Source: experimental · Confidence: low · Status: experimental
 
-Percentage bonuses are additive. PvP multiplier defaults to 0.6 followed by opponent reduction. Boss bonus applies to giant, boss, worldboss. Unknown monster block defaults to zero. PvP crit resistance and block penetration subtract percentage points.
+Flat PvE damage is separated from percentage PvE damage. Mode bonuses, boss bonuses, incoming damage and reduction stages remain distinct. PvP uses the reference 0.6 attack factor and the current official 50% reduction cap. PvE level-gap penalties apply at +2 through +15 and do not apply in PvP. Boss ranks beyond the reference giant rank retain NAOL's estimated boss/worldboss classification pending fixtures.
 
 ## Expected damage
 
 Source: inferred · Confidence: medium · Status: experimental
 
-Hit, crit and block are assumed independent. Five mutually exclusive event probabilities sum to one. Probability-weighted damage includes misses and blocked criticals. Blocked damage defaults to 10%.
+Hit, crit and block are assumed independent. Mutually exclusive probabilities sum to one. Player-defender blocked damage uses 20% in PvE and 30% in PvP; monster blocked damage uses 20%. Context critical ranges and the same deterministic attack event cycle are used by both expected and sampled results.
 
 ## DPS / TTK
 
 Source: inferred · Confidence: low · Status: experimental
 
-Auto attack rate = attacksPerSecond × speed / 100. Burst counts floor(duration / interval) attacks. Sustained is expected damage / interval. TTK = HP / DPS; does not model regeneration, immunity, movement or resource exhaustion.
+Auto attack interval uses the converted internal attack speed. Dual wield follows main/off/main/both events, with offhand factor 0.75 + lefthanddamage / 100. Expected damage averages a complete cycle. TTK = HP / DPS; exact animation cadence, regeneration, immunity, movement and resource exhaustion still require controlled timing fixtures.
 
 ## Single skills / buffs
 
@@ -84,7 +84,7 @@ Published piercing capacity and separate card families are documented by the [of
 
 Class weapon/shield eligibility uses API category/subcategory/class/level/sex metadata and ancestry. Blade/Slayer dual-wield capability is a manually maintained class rule. Compatible shields can be selected through an explicit hand preference; no class gains dual wield just because it has a one-handed weapon. Armor normal upgrade caps and suit-only armor capabilities follow the supplied game rules.
 
-Each hand has an independent base attack range, normal upgrade and offensive element. All applicable equipment abilities feed character stats. `lefthanddamage` changes only the left-hand attack contribution. Primary auto-attack metrics assume an alternating cycle with configurable leftHandFrequency (default 0.5) and leftHandMultiplier (default 1). This cycle is experimental, not a verified reproduction of Blade/Slayer attack timing. Single skills use the main hand. Monte Carlo samples the same hand mixture as deterministic expected damage.
+Each hand has an independent base attack range, normal upgrade and offensive element. All applicable equipment abilities feed character stats. `lefthanddamage` changes only the left-hand attack contribution. Primary auto-attack metrics use the independently implemented main/off/main/both event cycle. Legacy leftHandFrequency and leftHandMultiplier fields remain loadable but do not control the production cycle. Exact Blade/Slayer animation timing still needs calibration. Single skills use the main hand. Monte Carlo and deterministic expected damage share the event sequence.
 
 Armor set upgrade = minimum normal upgrade of four valid pieces. Missing/incompatible/out-of-range pieces yield no upgrade-set bonus. API setAbilities are applied at that level. The original illustrative armor glow is independent of Suit element and follows the first normal-upgrade level that has API setAbilities. Suit elementDefense is shown as a coefficient; no unsupported defensive elemental equation is applied.
 
@@ -117,3 +117,23 @@ Ultimate weapon sockets activate one per Ultimate level, capped at ten. Choices 
 Equipability uses exact API required-class ancestry, sex, level and hand rules. Build compatibility adds archetype weapon preference and active skill weapon requirements. The Scepter of Disorder's Magician requirement is unchanged; an Arcanist can see it under All Equipable, while staff-required skill damage is unusable and zero. Quick Builder and optimizer filter compatible candidates before scoring. Skill mismatch remains unusable even in theoretical mode.
 
 Schema 3 replaces generic upgrades with normalUpgrade, accessoryUpgrade or ultimateWeapon.ultimateUpgrade. Fixed-item legacy upgrades are discarded with a migration explanation; original equipment remains in migration metadata and browser backups. A generated compact seed item-rule index supports migration before class catalogs load; server migrations receive current synchronized data. Both version 1 and 2 saves migrate. Source references: https://api.flyff.com/ and https://universe.flyff.com/news/muransawakeningexpansion.
+
+## Additional Equipment Stat
+
+`/statawake` supplies naturally occurring combinations and minimum item levels. Weapon and armor eligibility excludes shields until a current authoritative rule confirms them. Dropped and unknown sources reference canonical API entries; Stat Scroll mode replaces the previous result with one STR/STA/DEX/INT line of +1 through +4. Additional Stat, Weapon Bonus, Ultimate bonuses, jewels/runes, and Fashion Blessings remain independent sources. Legacy `awake` indices remain readable and migrate to source `unknown` when synchronized data is available.
+
+## FLYFFULATOR PARITY REVIEW
+
+Reference repository: https://github.com/Frostiae/Flyffulator . Pinned commit: `89116244b670930ac8633a99212b7f9727bb8c12`. Audited 2026-10-13. Equations were independently implemented in NAOL TypeScript; no GPL source files/functions were copied. The detailed mapping, current-rule conflicts and remaining calibration work are in `docs/flyffulator-calculation-audit.md`. A reference algorithm alone is labeled Estimated, not Verified Official or Reference-Validated.
+
+Current Ultimate evidence: [Muran’s Awakening](https://universe.flyff.com/news/muransawakeningexpansion) specifies one jewel slot per upgrade, and the [February 5 patch](https://universe.flyff.com/news/patchnote020526) confirms Curtana’s ten slots. The reference’s seven-slot family behavior conflicts with the broad current official statement; NAOL retains official one-per-upgrade behavior and documents the discrepancy rather than silently importing that exception. The [August 11 patch](https://universe.flyff.com/index.php/news/patchnote081126) sets the current maximum PvP damage reduction to 50%.
+
+## Final character stat engine
+
+Every modifier is normalized before calculation with a canonical parameter, raw API parameter, value, operation (`flat`, `rate`, or `set`), source type, source identity, equipment slot, applicability, and confidence. Legacy `bossdamage` and `attributeattack` inputs remain readable, while calculations use the API names `bossmonsterdamage` and `attribute`.
+
+Primary stats retain base, allocated, equipment, upgrade, accessory, awakening, piercing, Ultimate, fashion, pet, skill, buff, manual, and residual formula buckets. Negative values are preserved. Final stat details expose formula IDs, source rows, and confidence. Official class HP/MP/FP expression inputs are marked verified; their combined stacking order and combat outputs remain estimated where the game does not publish an authoritative formula.
+
+Displayed Speed and Action Speed use a 100% baseline plus their bonuses. Attack Speed remains the separate class/DEX combat rate and is capped by the existing model. Block starts once from the class DEX coefficient plus generic block; melee, ranged, and PvP block then add their own API parameters independently.
+
+Observed screenshot values never replace calculated values. The UI shows observed, calculated, absolute difference, percentage difference, and possible missing sources. Calibration fixtures are class-scoped and never mutate defaults globally. Ultimate accessory rolls remain unsupported until authoritative API tables exist and therefore do not enter totals.

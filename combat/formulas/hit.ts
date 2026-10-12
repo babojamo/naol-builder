@@ -1,0 +1,3 @@
+export type HitContext='player-monster'|'monster-player'|'player-player';
+export function displayedParry(dex:number,bonus=0){return Math.floor(dex*.5)+bonus;}
+export function contextHitChance(input:{context:HitContext;attackerLevel:number;defenderLevel:number;rating:number;parry:number;bonus:number}){const a=input.attackerLevel,d=input.defenderLevel,factor=input.context==='player-monster'?2.4*(a*1.2/(a+d)):input.context==='monster-player'?3*(a*.5/(a+d*.3)):1.152;const raw=Math.floor((input.rating/(input.rating+input.parry||1))*factor*100);return {raw,probability:Math.min(96,Math.max(20,raw+input.bonus))/100};}

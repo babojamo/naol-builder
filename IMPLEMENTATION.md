@@ -29,3 +29,26 @@ See FORMULAS.md and README.md for limits. Full rotation combat, exact dual-wield
 - [x] Expanded engine tests and browser verification
 - [x] Ready for saved Site version and review handoff (native saved-version result reported in chat)
 - [ ] Replace live public version after user approval
+
+# Final stat engine audit checklist
+
+- [x] Canonical API parameter registry with backward-compatible aliases
+- [x] Source-aware modifier normalization and confidence metadata
+- [x] Flat, rate, set, negative, and once-only contribution handling
+- [x] Independent movement, action, attack speed, and block-family semantics
+- [x] Character Details groups with clickable provenance and formula notes
+- [x] Observed screenshot comparison without replacing calculated values
+- [x] Formula calibration moved from the player editor to admin/developer tooling
+- [x] Class-scoped calibration fixture model without global coefficient mutation
+- [x] AI candidates filtered by canonical slot, class, level, and equipment rules
+- [x] Eight final-class matrix and targeted regression tests
+- [x] Schema version 3 preserved
+- [x] Internal mechanic/source/confidence table in `STAT_ENGINE_AUDIT.md`
+- [x] Additional Stat source, eligibility, API combinations and single-stat Scroll controls
+- [x] Backward-compatible `awake` migration and production schema acceptance
+- [x] Independent Flyffulator behavior review and pure formula modules
+- [x] Target-effective defense, hit, block and critical values separated from sheet stats
+- [x] Shared expected/Monte Carlo event cycle and critical distribution
+- [x] Admin-only cross-engine fixture comparison
+- [x] Passive skill configuration within the character sandbox
+- [ ] Independent in-game damage/timing fixtures for Reference-Validated confidence

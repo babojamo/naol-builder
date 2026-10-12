@@ -1,13 +1,15 @@
 'use client';
-import {useCallback,useEffect,useRef,useState,type Dispatch,type SetStateAction} from 'react';import {useAuth} from './AuthProvider';import {createBuild,type CharacterBuild,type GameData} from '../lib/model';import {localBuilds,parseBuild,removeLocalBuild} from '../lib/persistence';import {preferencesRepository} from '../lib/repositories/accounts';import {buildRepository,type CloudBuild} from '../lib/repositories/builds';
+import {useCallback,useEffect,useLayoutEffect,useRef,useState,type Dispatch,type SetStateAction} from 'react';import {useAuth} from './AuthProvider';import {createBuild,type CharacterBuild,type GameData} from '../lib/model';import {localBuilds,parseBuild,removeLocalBuild} from '../lib/persistence';import {preferencesRepository} from '../lib/repositories/accounts';import {buildRepository,type CloudBuild} from '../lib/repositories/builds';
 type Draft={build:CharacterBuild;baseRevision:number;synced:boolean;at:string};
 export function useBuildStorage({build,data,editSerial,setEditSerial,setBuild,setSaved,setToast,restore,sharedId}:{build:CharacterBuild|null;data:GameData|null;editSerial:number;setEditSerial:Dispatch<SetStateAction<number>>;setBuild:Dispatch<SetStateAction<CharacterBuild|null>>;setSaved:Dispatch<SetStateAction<CharacterBuild[]>>;setToast:Dispatch<SetStateAction<string>>;restore:(b:CharacterBuild)=>Promise<void>;sharedId?:string}){
  const auth=useAuth(),[ready,setReady]=useState(false),[status,setStatus]=useState('Saved locally'),[conflict,setConflict]=useState(''),[lastSavedValue,setLastSavedValue]=useState('');
- const records=useRef(new Map<string,CloudBuild>()),queue=useRef<Promise<unknown>>(Promise.resolve()),lastSaved=useRef(''),replay=useRef(false),snapshot=useRef({build,data,auth,restore,editSerial});snapshot.current={build,data,auth,restore,editSerial};
+ const records=useRef(new Map<string,CloudBuild>()),queue=useRef<Promise<unknown>>(Promise.resolve()),lastSaved=useRef(''),replay=useRef(false),snapshot=useRef({build,data,auth,restore,editSerial});useLayoutEffect(()=>{snapshot.current={build,data,auth,restore,editSerial};});
  const previousOwner=useRef<string|null|undefined>(undefined),hydratedOwner=useRef<string|null|undefined>(undefined);
  const scratchOwnedId=useRef<string|null>(null);
  const prepare=useCallback((next:CharacterBuild)=>{if(auth.user&&!records.current.has(next.id)&&scratchOwnedId.current!==next.id){const id=crypto.randomUUID();scratchOwnedId.current=id;return {...next,id};}return next;},[auth.user?.id]);
  const draftKey=auth.user?'naol-account-draft:'+auth.user.id:'naol-draft';
+ // Hydrate owner-scoped storage; this effect never starts a cloud write.
+ // eslint-disable-next-line react-hooks/set-state-in-effect
  useEffect(()=>{let active=true;setReady(false);hydratedOwner.current=undefined;scratchOwnedId.current=null;setConflict('');records.current.clear();lastSaved.current='';replay.current=false;if(!build||auth.loading)return;
  const owner=auth.user?.id??null,changed=previousOwner.current!==undefined&&previousOwner.current!==owner;previousOwner.current=owner;
  const reset=async()=>{if(!changed||!snapshot.current.data)return;setEditSerial(0);let replacement=createBuild(snapshot.current.data);try{const local=localStorage.getItem('naol-draft');if(local)replacement=parseBuild(JSON.parse(local),snapshot.current.data);}catch{}await snapshot.current.restore(replacement);};
@@ -28,6 +30,8 @@ export function useBuildStorage({build,data,editSerial,setEditSerial,setBuild,se
  const uid=snapshot.current.auth.user?.id;if(!uid)throw Error('Sign in to save across devices.');
  const operation=queue.current.catch(()=>{}).then(async()=>{if(snapshot.current.auth.user?.id!==uid)throw Error('Account changed. Save again in the current account.');const clean=parseBuild(next);const row=records.current.get(clean.id);writeDraft(clean,false,row?.revision??0);setStatus('Saving…');const saved=await buildRepository.save(clean,row?.revision??0,visibility);if(snapshot.current.auth.user?.id!==uid)return saved;records.current.set(clean.id,saved);lastSaved.current=JSON.stringify(clean);setLastSavedValue(lastSaved.current);setSaved([...records.current.values()].map(x=>x.build));const current=snapshot.current.build;if(current?.id===clean.id&&JSON.stringify(current)===JSON.stringify(clean))writeDraft(clean,true,saved.revision);else if(current?.id===clean.id)writeDraft(current,false,saved.revision);replay.current=false;setStatus('Saved');return saved;});queue.current=operation;try{return await operation;}catch(e){setStatus('Sync failed');const message=(e as Error).message;if(/changed|another account|deleted/i.test(message))setConflict(message);throw e;}
  };
+ // Persist the local draft and its sync status after an edit.
+ // eslint-disable-next-line react-hooks/set-state-in-effect
  useEffect(()=>{if(!build||!ready||hydratedOwner.current!==(auth.user?.id??null))return;if(!auth.user){try{writeDraft(build,false,0);setStatus('Saved locally');}catch{setStatus('Sync failed');}return;}
  if((editSerial===0&&!replay.current)||conflict||sharedId&&editSerial===0)return;
  try{writeDraft(build,false,records.current.get(build.id)?.revision??0);}catch{setToast('Draft storage unavailable. Export your build to keep a backup.');}

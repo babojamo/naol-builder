@@ -1,0 +1,8 @@
+import assert from 'node:assert/strict';
+import {createBuild,type GameData} from '../lib/model';
+import {parseBuild} from '../lib/persistence';
+import classes from '../data/class.json';import monsters from '../data/monster.json';
+process.loadEnvFile('.env.migration');
+const project=process.argv[2];if(!/^[a-z0-9]{20}$/.test(project??''))throw Error('Verified project reference is required.');
+const build=createBuild({class:classes,monster:monsters} as unknown as GameData);build.baseStats={str:15,sta:15,dex:15,int:15};build.equipment.rightHand={itemId:8767,normalUpgrade:0,element:'none',elementUpgrade:0,awake:null,piercings:[],additionalStat:{source:'stat-scroll',abilities:[{parameter:'int',add:3}]}};build.observedStats={maxHp:9730};const canonical=parseBuild(build),bad={...canonical,unexpectedField:true};const literal=(value:unknown)=>JSON.stringify(value).replaceAll("'","''");
+const response=await fetch('https://api.supabase.com/v1/projects/'+project+'/database/query',{method:'POST',headers:{Authorization:'Bearer '+process.env.SUPABASE_ACCESS_TOKEN,'Content-Type':'application/json'},body:JSON.stringify({query:`select naol_private.valid_build('${literal(canonical)}'::jsonb) as valid, naol_private.valid_build('${literal(bad)}'::jsonb) as invalid;`})});if(!response.ok)throw Error('Schema validation request failed: '+response.status);const rows=await response.json() as {valid:boolean;invalid:boolean}[];assert.equal(rows[0].valid,true);assert.equal(rows[0].invalid,false);console.log('Production schema accepts Additional Stat and observed stats, and rejects unknown fields. No build records were created.');
