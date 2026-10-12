@@ -20,7 +20,7 @@ Base attack/defense, upgrade percentages, abilities and set membership come from
 
 Source: inferred · Confidence: low · Status: experimental
 
-Weapon attack × 2 + class autoAttackFactor × primary stat + level × 2, then weapon upgrade and attack abilities. Defense = armor + STA × class defense + level. Offhand weapon damage cycle is not implemented.
+Weapon attack × 2 + class autoAttackFactor × primary stat + level × 2, then weapon upgrade and attack abilities. Defense = armor + STA × class defense + level. Each hand contributes independently; attack-cycle timing remains an explicit estimate.
 
 ## Hit probability
 
@@ -62,13 +62,13 @@ Auto attack rate = attacksPerSecond × speed / 100. Burst counts floor(duration 
 
 Source: experimental · Confidence: low · Status: experimental
 
-API skill min/max attack is added to estimated attack, then target defense and modifiers. Skill levels without explicit level fields use array index + 1. API skill-awakening options are validated by weapon type and rarity, with an experimental 1 + awakening / 100 multiplier. No scaling, synergies, combo, conditional damage multipliers, resources or rotations. Buff flat/rate abilities are supported; duration and external caster stats are not.
+API skill min/max attack is added to estimated attack, then target defense and modifiers. Skill levels without explicit level fields use array index + 1. API skill-awakening options are validated by weapon type and rarity, with an experimental 1 + awakening / 100 multiplier. Support additive scaling and durations are implemented where supplied. General damage-skill scaling, conditional effects, synergies and rotations remain limited.
 
 ## Recommendation / score
 
 Source: experimental · Confidence: low · Status: experimental
 
-Stages filter class, gender, level and rarity; score top 15 base-value candidates per slot. DPS score = estimated DPS. Balanced = DPS × sqrt(HP). Tank = HP × (1 + DEF / 1000). Budgets have no price data. Stat budget defaults to 2 points per level.
+Stages filter class, gender, level and rarity; score top 15 base-value candidates per slot. Role scores now dispatch to Damage, Support, Tank and Hybrid normalization; see the schema-2 section. Budgets have no price data. Stat budget defaults to 2 points per level.
 
 ## Verification still needed
 
@@ -77,3 +77,19 @@ Collect in-game tests at several levels, weapon types and stat allocations with 
 The API has no standalone ability endpoint; Ability is an embedded schema on items, sets and skills. Weapons and armor are item categories; elemental upgrade coefficients are in upgradelevelbonus and monster resistances are on Monster. statAwake and skillAwake have distinct formats and are normalized separately. API skill level arrays may omit a level field; index + 1 is used. Unknown abilities are preserved in raw catalogs but only explicitly supported parameters enter calculations.
 
 Gear compatibility uses class ancestry, API level and sex requirements. Piercing card slot type uses official English descriptions, with a conservative four-slot MVP cap. Raised-pet values are individual indices, not a complete tier-combination model. Point budget is configurable and defaults to 2 points/level; quest/stat rewards and rebirth systems are not included.
+
+## Role and equipment revision (schema 2)
+
+Published piercing capacity and separate card families are documented by the [official Flyff Universe developer note](https://cdn-universe.flyff.com/site/FlyffUniverse_Devnote_Piercing.pdf): five sockets for a one-hand weapon or shield, ten for two-hand weapons. Suit cards use a separate four-slot system as specified. The API lacks an item-level eligibility flag, so historical exceptions are marked unverified.
+
+Class weapon/shield eligibility uses API category/subcategory/class/level/sex metadata and ancestry. Blade/Slayer dual-wield capability is a manually maintained class rule. Compatible shields can be selected through an explicit hand preference; no class gains dual wield just because it has a one-handed weapon. Armor normal upgrade caps and suit-only armor capabilities follow the supplied game rules.
+
+Each hand has an independent base attack range, normal upgrade and offensive element. All applicable equipment abilities feed character stats. `lefthanddamage` changes only the left-hand attack contribution. Primary auto-attack metrics assume an alternating cycle with configurable leftHandFrequency (default 0.5) and leftHandMultiplier (default 1). This cycle is experimental, not a verified reproduction of Blade/Slayer attack timing. Single skills use the main hand. Monte Carlo samples the same hand mixture as deterministic expected damage.
+
+Armor set upgrade = minimum normal upgrade of four valid pieces. Missing/incompatible/out-of-range pieces yield no upgrade-set bonus. API setAbilities are applied at that level. The original illustrative armor glow is independent of Suit element and follows the first normal-upgrade level that has API setAbilities. Suit elementDefense is shown as a coefficient; no unsupported defensive elemental equation is applied.
+
+Heal uses a compatible API support skill's `hp` ability and supported additive `scalingParameters` (including INT and maximum caps). Outgoing `healing` and explicit ally incoming-healing percentages multiply that amount; their stacking order is labeled estimated. Caster incominghealing and hprestoration do not increase outgoing Heal. Cast time uses API casting multiplied by estimated cast reduction; cooldown, duration and MP cost are supplied by skill level data when available. MP cost reduction changes casts available from the full MP reserve. Regeneration is excluded because its base cadence/formula is not known. Unsupported multiplicative/part-dependent scaling and synergies produce warnings.
+
+Outgoing buff values and duration use documented additive caster-stat scaling. Self-targeted effects are marked and basic API abilities apply to the caster; conditional activation/stacking remains unverified. Hymn parameters are retained and displayed, without inventing a rotation or conditional cooldown formula.
+
+SupportScore includes no DPS or weapon-attack term. Its five normalized components are weighted by user-configurable weights: healing 30, buff power 25, cast speed 15, MP reserve 15, survivability 15. Normalization references are heuristic calibration points, not official ratings. Buff power aggregates parameters with different units and is explicitly heuristic. DamageScore uses normalized DPS; TankScore uses HP/reduction/defense durability; HybridScore equally blends DamageScore with SupportScore or TankScore depending on archetype.

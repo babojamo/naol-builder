@@ -15,3 +15,17 @@
 - [ ] Public publication after user approval
 
 See FORMULAS.md and README.md for limits. Full rotation combat, exact dual-wield cycles, authoritative pricing, all awakening variants, validated PvP mechanics and public popularity rankings remain future work.
+
+# Schema 2 update checklist
+
+- [x] Preserve existing Site and NAOL visual identity
+- [x] Separate PvE/PvP from class-specific role/archetype
+- [x] Add Support Lab and role-specific scoring/optimizer dispatch
+- [x] Centralize hand topology, selectors and item upgrade capabilities
+- [x] Calculate main/offhand contributions independently, label cycle assumptions
+- [x] Four independent armor upgrades, minimum set bonus and separate armor glow
+- [x] Suit-only defensive element and four suit sockets; 5/10 weapon and 5 shield sockets
+- [x] Schema-2 migration preserves legacy equipment and local backups
+- [x] Expanded engine tests and browser verification
+- [x] Ready for saved Site version and review handoff (native saved-version result reported in chat)
+- [ ] Replace live public version after user approval

@@ -6,7 +6,7 @@ Flyff Universe Build Optimizer built in React 19 and TypeScript on the Sites Vin
 
 Requires Node >=22.13.0. Run npm run install:ci once, then npm run dev. The portable preview runs at http://127.0.0.1:5173.
 
-- npm test — 18 engine tests using captured official API records
+- npm test — 37 engine tests using captured official API records
 - npm run typecheck — TypeScript checks
 - npm run build — Sites Worker build with its maintained build/sites-vite-plugin integration
 - npm run db:generate — append a schema migration after editing db/schema.ts
@@ -28,7 +28,7 @@ Official API → versioned normalization/sync → bundled snapshot + R2 generati
 
 ## Persistence and sharing
 
-Local draft autosave and named builds require no login. Cloud save and link creation use Sign in with ChatGPT. Import/export uses version-1 JSON validated with the same schema as server writes. A shareable record is available at /build/{id}. Normal Save sets sharing false; Copy Build Link explicitly enables it. Viewers should duplicate a shared build before saving their own cloud copy. No public build discovery or popularity ranking is claimed.
+Local draft autosave and named builds require no login. Cloud save and link creation use Sign in with ChatGPT. Import/export uses schema-version-2 JSON (with automatic version-1 migration) validated with the same schema as server writes. A shareable record is available at /build/{id}. Normal Save sets sharing false; Copy Build Link explicitly enables it. Viewers should duplicate a shared build before saving their own cloud copy. No public build discovery or popularity ranking is claimed.
 
 ## Formula status
 
@@ -44,17 +44,37 @@ Site ID is retained in .openai/hosting.json. Use the Sites source workflow helpe
 
 ## Known MVP limits
 
-- Dual-wield alternating attacks, exact stacking order, ultimate weapon restrictions, elemental armor defense, normal-versus-ultimate limits and some set/conditional effects remain unverified.
+- Both hands now have independent attack, upgrades, elements and ability contributions. The equal alternating dual-wield cycle and left-hand multiplier remain explicitly configurable estimates. Exact stacking, conditional effects and ultimate equipment remain unverified.
 - HP formula strings are official, but modifier stacking is still approximate.
-- Skill scaling, synergies, resources, rotations, buff duration and caster scaling are not implemented.
+- Support Lab evaluates documented additive caster-stat scaling on healing and buffs, and displays duration/cooldown when supplied. Conditional scaling, synergies, resources, rotations and exact animation limits remain unverified. General damage-skill scaling remains limited.
 - Raised-pet values use a selected API bonus index rather than tier-combination summation. Pet grace skills are not simulated. Decorative pets without numeric bonuses are excluded.
-- Piercing types use official card descriptions; the MVP conservatively supports four slots and labels capacity experimental.
+- Suit sockets are separate from weapon/shield sockets. Published limits are 4 suit, 5 one-handed weapon/shield, and 10 two-handed weapon. Item-specific historical eligibility remains unverified because the API has no piercing-eligibility flag.
 - Dungeon lists filter base monsters; dungeon monster modifiers and boss regeneration/phase mechanics are not applied.
 - Quick budgets are rarity/upgrade heuristics; custom Penya price modeling is not available.
-- Build scores and DEX thresholds describe this configurable estimate engine, not official metrics or validated game breakpoints.
+- Role-specific DamageScore, SupportScore, TankScore and HybridScore describe heuristic estimates, not official metrics. Support Score excludes DPS/weapon attack and has configurable weights. DEX thresholds remain inferred engine breakpoints.
 - R2 cooldown is best-effort across Worker isolates, not an atomic distributed lock. Manual syncing should remain owner-driven; use a Durable Object lock if scaling to many simultaneous sync requests.
 - Community public listings, complete full-opponent editor within the PvP screen, fight win probabilities, 3D models and real market prices remain future work. Full saved builds can be compared bidirectionally instead.
 
 ## Attribution
 
 Independent free informational tool for the official Flyff Universe game. Data and public API icons: Gala Lab / Flyff Universe, https://api.flyff.com. The API documentation permits use for informational tools and prohibits commercial use, game automation and other games. This app has no monetization. Character illustration and elemental effects are original approximations.
+
+## Schema 2 and role/equipment refactor
+
+Activity mode (`pve`/`pvp`) is separate from role and class-specific archetype. lib/archetypes.ts is the extensible configuration; inherited classes resolve through API ancestry. The Quick wizard retains eight steps, with role/archetype in step four and activity in step five. Support builds use INT, suitable sticks, learned healing/buff settings and a support-focused score. Damage remains an optional secondary view.
+
+Equipment uses rightHand, leftHand and shield, plus exactly four primary armor slots (helmet, suit, gauntlets, boots). lib/equipment.ts centralizes selectors, capabilities, hand layout, validation, explicit repair, effective set upgrade and armor glow. Class eligibility, level, gender, weapon type and twoHanded come from API items. Blade ancestry is the only manually configured dual-wield capability. Compatible shields still follow API metadata; an explicit hand preference can choose a valid shield setup where available. Default Blade damage recommendations use two weapons.
+
+Normal weapon/armor upgrades are capped at +10; accessory levels follow their API table. Only Suit has armor element and suit cards. Defensive Suit element coefficients are displayed but are not applied to incoming damage until the interaction formula is verified. Weapon elemental effects use each hand independently. Armor glow uses the minimum valid upgrade across all four pieces, separately from suit/weapon elements; the illustrative glow threshold follows the first API set-bonus level.
+
+lib/ability-registry.ts uses the complete current API ability vocabulary and preserves unknown abilities. Support metrics show healing/cast, estimated throughput, cast reduction, MP cost/reserve, API MP recovery bonus, supported buff values/duration and Hymn bonuses. No unknown MP regeneration rate or Hymn rotation is fabricated. Self buffs are marked; ally class selection does not fabricate an ally DPS increase.
+
+Migration maps legacy weapon/offhand/armor fields into schema 2. Known shields use captured official IDs. Original equipment remains in metadata.migration. Invalid legacy settings stay flagged rather than being clamped or deleted. Device backups use naol-draft-before-v2 and naol-builds-before-v2. Cloud payloads migrate when read by the canonical parser and are rewritten only on an explicit save. The Repair incompatible equipment action is explicit and undoable.
+
+Additional QA: tests/equipment-support.test.ts and tests/browser-equipment-support.mjs cover dual wield, shields, two-handed restrictions, every armor capability, independent elements, armor minimum upgrades/glow, 4/5/10 socket capacities, support formulas, score independence and legacy migrations. The original browser smoke suite remains in place.
+
+This update is saved for review. The existing public Site at naol-builder.lokwensio.com is preserved until publication approval.
+
+Healer, Buffer and Support + Survivability archetypes initialize different Support Score weights, while PvE/PvP context changes leave the role intact. All weights remain editable in Support Lab.
+
+On Windows, the Sites Bash packaging wrapper may fail to translate drive paths. `scripts/package-portable.mjs` provides a native-tar fallback and reuses the maintained Sites build validator. Pass the absolute Sites plugin root and archive path as arguments. Keep source pushes in the credential-safe Sites source workflow. No plugin credentials are required by the packager.
