@@ -27,18 +27,22 @@ Deno.serve(async (request) => {
   }
   if (request.method !== 'POST') return reply({ error: 'Method not allowed.' }, 405);
   const apiKey = Deno.env.get('OPENAI_API_KEY');
-  if (!apiKey) return reply({ error: 'AI Character Import is being configured. Please try again later.' }, 503);
+  if (!apiKey?.trim()) return reply({ error: 'AI Character Import is not configured yet.' }, 503);
   let reservation: string | undefined;
+  let stage = 'request';
+  let providerStatus = 0;
   const db = admin();
   try {
     const text = await request.text();
     if (text.length > 30_000_000) throw Error('Combined screenshot size is too large.');
     const input = JSON.parse(text) as { images?: unknown };
     const images = readImages(input.images);
+    stage = 'quota_reservation';
     const { data: reserved, error: reserveError } = await db.rpc('reserve_ai_build_usage', { p_user_id: signed.id, p_image_count: images.length, p_model: MODEL });
     if (reserveError) throw Object.assign(new Error(reserveError.message), { code: reserveError.code });
     reservation = reserved?.[0]?.import_id;
     if (!reservation) throw Error('Unable to reserve AI usage.');
+    stage = 'openai_request';
     const content = [
       { type: 'input_text', text: instructions },
       ...images.map((image) => ({ type: 'input_image', image_url: `data:${image.mimeType};base64,${image.data}`, detail: 'high' })),
@@ -57,19 +61,31 @@ Deno.serve(async (request) => {
       body: JSON.stringify(requestBody),
       signal: AbortSignal.timeout(90000),
     });
-    if (!response.ok) throw Error(response.status === 429 ? 'AI service is busy. Your usage was returned.' : 'AI analysis failed. Your usage was returned.');
+    if (!response.ok) {
+      providerStatus = response.status;
+      const errorPayload = await response.json().catch(() => ({})) as { error?: { code?: string; type?: string } };
+      console.error('AI import provider request failed', JSON.stringify({ status: response.status, code: errorPayload.error?.code ?? null, type: errorPayload.error?.type ?? null }));
+      throw Object.assign(new Error('The AI provider rejected the analysis request.'), { code: 'openai_request_failed' });
+    }
     const payload = await response.json() as Record<string, unknown>;
     const draft = JSON.parse(outputText(payload));
     if (!draft || typeof draft !== 'object' || !Array.isArray((draft as Record<string, unknown>).equipment)) throw Error('Vision model returned an invalid character draft.');
+    stage = 'save_result';
     const completed = await db.rpc('complete_ai_build_import', { p_import_id: reservation, p_result: draft, p_normalized: null });
     if (completed.error) throw completed.error;
     const q = await quota(signed.id);
     return reply({ importId: reservation, model: MODEL, draft, usage: { used: q.usage_used, limit: q.usage_limit, remaining: Math.max(0, q.usage_limit - q.usage_used) } });
   } catch (error) {
-    if (reservation) await db.rpc('refund_ai_build_import', { p_import_id: reservation, p_error_code: (error as { code?: string }).code ?? 'analysis_failed', p_error_message: (error as Error).message });
+    const code = (error as { code?: string }).code ?? 'analysis_failed';
+    if (reservation) {
+      const refunded = await db.rpc('refund_ai_build_import', { p_import_id: reservation, p_error_code: code, p_error_message: `${stage}: ${(error as Error).message}` });
+      if (refunded.error) console.error('AI import refund failed', JSON.stringify({ stage, code: refunded.error.code }));
+    }
     const message = (error as Error).message;
+    console.error('AI import failed', JSON.stringify({ stage, code, providerStatus: providerStatus || null }));
     if (message.includes('No AI imports') || message.includes('disabled') || message === 'Submit between 1 and 8 screenshots.') return reply({ error: message }, message.includes('No AI imports') ? 429 : 403);
     if (message.includes('screenshot') || message.includes('PNG')) return reply({ error: message }, 400);
-    return reply({ error: message.startsWith('AI service') || message.startsWith('AI analysis') ? message : 'AI analysis failed. Please try again; no usage was consumed.' }, 503);
+    if (code === 'openai_request_failed') return reply({ error: providerStatus === 401 || providerStatus === 403 ? 'OpenAI rejected the configured API key or project access.' : providerStatus === 429 ? 'OpenAI is rate limited or the API project has no available balance.' : `OpenAI rejected the request (HTTP ${providerStatus}). No AI usage was consumed.` }, 502);
+    return reply({ error: `AI import failed during ${stage.replaceAll('_', ' ')}. No AI usage was consumed.`, code }, 503);
   }
 });
