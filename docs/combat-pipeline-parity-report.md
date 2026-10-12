@@ -10,7 +10,7 @@ Audited reference: Flyffulator commit `89116244b670930ac8633a99212b7f9727bb8c12`
 - Infusion resolves the effective element before selecting target resistance and mastery; a fire spell with a water weapon uses water resistance. A non-elemental spell stays non-elemental.
 - Player magic defense uses class INT/STA factors and flat Magic Defense, then the **def** rate and PvP defense factor. The **magicdefense** rate separately reduces incoming magic-skill attack. Sheet Magic Defense remains its existing display calculation.
 - Pinned reference normal wand attacks use MAGIC, route through melee-skill defense, and never call physical block. They also skip generic hit/miss. NAOL now uses hit 100%, block 0% and the 2.3 wand critical multiplier for uncharged attacks.
-- Each hand receives its modifier once, then the main/off/main/both event aggregates hands. Mode rates, incoming rate, boss rate and reduction run with separate floors on that event aggregate. Simulation uses these same finalized event ranges rather than pre-mode hand values.
+- Each hand receives its modifier once, then the main/off/main/both event aggregates hands. Mode rates, incoming rate, boss rate and reduction run with separate floors on that event aggregate. Simulation uses these same finalized event ranges rather than pre-mode hand values. The worker is emitted through a Vite worker URL import and resolved against the page origin, avoiding a build-time file URL base. Pure simulation code is shared in simulation-engine.ts to avoid circular worker imports.
 
 `calculationStages` exposes weapon range, base power, the three additive attack rates, rated/flat attack, incoming magic reduction, effective defense, post-defense range, post-element power, awake/auto/off-hand factors, level penalty, mode/incoming/boss/reduction rates and intermediate results, and final expectation. The existing debugger renders these numeric stages.
 
@@ -52,7 +52,7 @@ Production deployment includes `202610130002_ai_analysis_consumption.sql`, the `
 
 ## Changed files
 
-Combat: `combat/attack.ts`, `combat/character.ts`, `combat/simulation.ts`, `combat/formulas/attack-modifiers.ts`, `damage-stages.ts`, `elements.ts`, `skill-power.ts`.
+Combat: `combat/attack.ts`, `combat/character.ts`, `combat/simulation.ts`, `combat/simulation-engine.ts`, `combat/simulation.worker.ts`, `lib/vite-worker.d.ts`, `combat/formulas/attack-modifiers.ts`, `damage-stages.ts`, `elements.ts`, `skill-power.ts`.
 
 AI/admin: `components/AICharacterImport.tsx`, `lib/additional-stat.ts`, `supabase/functions/analyze-character/index.ts`, `_shared/analysis-policy.ts`, migrations `202610120008_admin_bootstrap.sql` and `202610130002_ai_analysis_consumption.sql`, `scripts/seed-admin.mjs`, `scripts/check-ai-consumption.sql`.
 
