@@ -78,3 +78,11 @@ This update is saved for review. The existing public Site at naol-builder.lokwen
 Healer, Buffer and Support + Survivability archetypes initialize different Support Score weights, while PvE/PvP context changes leave the role intact. All weights remain editable in Support Lab.
 
 On Windows, the Sites Bash packaging wrapper may fail to translate drive paths. `scripts/package-portable.mjs` provides a native-tar fallback and reuses the maintained Sites build validator. Pass the absolute Sites plugin root and archive path as arguments. Keep source pushes in the credential-safe Sites source workflow. No plugin credentials are required by the packager.
+
+### Jewelry and smart performance update
+
+Added API upgrade-specific jewelry requirements, locked progression, explicit repairs, future-level optimizer candidates and Ultimate configuration storage. All accessory rules are shared across normal/theoretical builds, comparisons and imported full PvP opponents. Existing slot-keyed schema 2 builds are retained without lossy migration.
+
+Sixteen extensible performance profiles now drive results, target-aware primary metrics, scoring, comparisons, optimization and original character actions. Advanced focus overrides and custom metric pins persist. Burst shows total window damage; AoE separates damage per enemy from combined damage; tank results require real attack data and measured timing. Confidence is retained for each metric. See FORMULAS.md for calculation limits.
+
+Regression coverage: tests/accessory-performance.test.ts and tests/browser-accessory-performance.mjs. API fixtures cover Vigor, Demol, Gore and Defender's Ultimate upgrade boundaries. Browser checks cover independent upgrades, locked levels, theoretical warnings, explicit repairs, persistent focus, custom pins, AoE, future planning, full opponent imports and responsive/reduced-motion behavior.

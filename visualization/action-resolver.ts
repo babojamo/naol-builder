@@ -1,0 +1,7 @@
+import {getHandConfiguration} from '../lib/equipment';
+import type {CharacterBuild,GameData} from '../lib/model';
+import {getPerformanceProfile,isMagicBuild} from '../performance/detect-profile';
+import type {CharacterAction} from '../performance/profiles';
+export function attackAction(b:CharacterBuild,d:GameData):CharacterAction{const weapon=d.item.find(x=>x.id===b.equipment.rightHand?.itemId);return b.attackType==='skill'||isMagicBuild(b,d)?'magic_cast':weapon?.subcategory==='bow'?'ranged_attack':getHandConfiguration(b,d)==='dual-wield'&&b.equipment.leftHand?'dual_wield_attack':'melee_attack';}
+export function availableActions(b:CharacterBuild,d:GameData):CharacterAction[]{const profile=getPerformanceProfile(b,d),actions:CharacterAction[]=['idle',attackAction(b,d),'burst_attack'];if(profile.scoreType==='support'||profile.id==='hybrid_damage_support')actions.push('heal','buff');if(profile.scoreType==='tank'||profile.id==='off_tank')actions.push('defend');if(b.equipment.shield&&getHandConfiguration(b,d)==='weapon-shield')actions.push('block');if(isMagicBuild(b,d)||profile.id.includes('aoe'))actions.push('magic_cast','aoe_cast');return [...new Set(actions)];}
+export function resolveCharacterAction(b:CharacterBuild,d:GameData):CharacterAction{const selected=b.performance?.action;if(selected&&selected!=='auto'&&availableActions(b,d).includes(selected))return selected;const action=getPerformanceProfile(b,d).preferredVisualizationAction;return action==='melee_attack'?attackAction(b,d):action;}

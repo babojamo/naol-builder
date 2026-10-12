@@ -1,0 +1,17 @@
+import type {Ability,CharacterBuild,GameData,Item,Slot} from './model';
+export const accessorySlots=['ring1','ring2','earring1','earring2','necklace'] as const;
+export type AccessorySlot=typeof accessorySlots[number];
+export interface UltimateAccessoryConfig {ultimateBonuses?:Ability[];ultimateJewels?:{itemId:number;abilities?:Ability[]}[]}
+export interface EquippedAccessory extends UltimateAccessoryConfig {itemId:number;upgradeLevel:number}
+export const isAccessory=(item:Item)=>item.category==='jewelry'&&['ring','earring','necklace'].includes(item.subcategory??'');
+export function getAccessoryUpgradeLevels(item:Item){return item.upgradeLevels?.length?[...item.upgradeLevels].sort((a,b)=>a.upgradeLevel-b.upgradeLevel):[{upgradeLevel:0,requiredLevel:item.level??1,abilities:item.abilities??[]}];}
+export function getAccessoryRequiredLevel(item:Item,upgradeLevel:number){return item.upgradeLevels?.find(x=>x.upgradeLevel===upgradeLevel)?.requiredLevel??item.level??1;}
+export function canEquipAccessory(characterLevel:number,item:Item,upgradeLevel:number){return isAccessory(item)&&getAccessoryUpgradeLevels(item).some(x=>x.upgradeLevel===upgradeLevel)&&characterLevel>=getAccessoryRequiredLevel(item,upgradeLevel);}
+export function getHighestWearableUpgrade(characterLevel:number,item:Item):number|null{const valid=getAccessoryUpgradeLevels(item).filter(x=>canEquipAccessory(characterLevel,item,x.upgradeLevel));return valid.length?Math.max(...valid.map(x=>x.upgradeLevel)):null;}
+export function getAccessoryAbilities(item:Item,upgradeLevel:number){return getAccessoryUpgradeLevels(item).find(x=>x.upgradeLevel===upgradeLevel)?.abilities??[];}
+// Keep the existing slot-keyed persistence format as the single source of truth.
+// This typed view avoids duplicate state and preserves all existing saved builds.
+export function getAccessories(b:CharacterBuild):Partial<Record<AccessorySlot,EquippedAccessory>>{return Object.fromEntries(accessorySlots.flatMap(slot=>{const g=b.equipment[slot];return g?[[slot,{itemId:g.itemId,upgradeLevel:g.upgrade,...g.ultimate}]]:[]}));}
+export type AccessoryIssue={type:'accessory-level-requirement'|'accessory-upgrade';slot:Slot;itemId:number;upgradeLevel:number;requiredLevel:number;characterLevel:number;severity:'error';message:string};
+export function validateAccessories(b:CharacterBuild,d:GameData):AccessoryIssue[]{return accessorySlots.flatMap(slot=>{const g=b.equipment[slot],item=d.item.find(x=>x.id===g?.itemId);if(!g||!item||!isAccessory(item)||canEquipAccessory(b.level,item,g.upgrade))return [];const requiredLevel=getAccessoryRequiredLevel(item,g.upgrade),known=getAccessoryUpgradeLevels(item).some(x=>x.upgradeLevel===g.upgrade);return [{type:known?'accessory-level-requirement':'accessory-upgrade',slot,itemId:item.id,upgradeLevel:g.upgrade,requiredLevel,characterLevel:b.level,severity:'error',message:known?`${item.name} +${g.upgrade} in ${slot} requires Lv${requiredLevel}; you are Lv${b.level}.`:`${item.name} has no API upgrade +${g.upgrade}.`}];});}
+export function calculateEquipmentSetBonuses(equippedItems:number[],sets:GameData['equipset']){return sets.flatMap(set=>{const available=new Map<number,number>();for(const id of set.parts)available.set(id,(available.get(id)??0)+1);let count=0;for(const id of equippedItems){const remaining=available.get(id)??0;if(remaining>0){count++;available.set(id,remaining-1);}}return set.bonus.filter(x=>count>=x.equipped).map(x=>x.ability);});}
