@@ -86,3 +86,9 @@ Added API upgrade-specific jewelry requirements, locked progression, explicit re
 Sixteen extensible performance profiles now drive results, target-aware primary metrics, scoring, comparisons, optimization and original character actions. Advanced focus overrides and custom metric pins persist. Burst shows total window damage; AoE separates damage per enemy from combined damage; tank results require real attack data and measured timing. Confidence is retained for each metric. See FORMULAS.md for calculation limits.
 
 Regression coverage: tests/accessory-performance.test.ts and tests/browser-accessory-performance.mjs. API fixtures cover Vigor, Demol, Gore and Defender's Ultimate upgrade boundaries. Browser checks cover independent upgrades, locked levels, theoretical warnings, explicit repairs, persistent focus, custom pins, AoE, future planning, full opponent imports and responsive/reduced-motion behavior.
+
+### Item-rule correction (schema 3)
+
+A shared item capability layer and ItemUpgradePanel now distinguish standard gear, progressive accessories, fixed variants and Ultimate equipment. Dedicated Ultimate weapon configuration supports active/inactive sockets, duplicate jewels, once-only runes and API-validated base/+6/+10 random bonuses. The picker defaults to Compatible with Build; All Equipable keeps API class ancestry rules without allowing staff-required skills to cast through a wand. Quick/optimizer candidates use the same rules before scoring.
+
+Existing version 1/2 builds migrate to schema 3 with original gear backups. Tests in tests/item-rules.test.ts and tests/browser-item-rules.mjs cover Clockworks variants, native/converted Ultimate weapons, sockets and bonus thresholds, class branches, Scepter behavior, migration and mobile controls. The new update is prepared in a separate private review Site; current production is preserved for review.
