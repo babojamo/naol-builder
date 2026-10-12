@@ -13,6 +13,7 @@ import {validateAdditionalStat,canReceiveAdditionalStat} from '../lib/additional
 import {calculateAttackSpeedInternal,calculateDisplayedAttackSpeed} from './formulas/attack-speed';
 import {weaponStatContribution,calculateWeaponRange} from './formulas/weapon-attack';
 import {displayedParry} from './formulas/hit';
+import {modifyAttack} from './formulas/attack-modifiers';
 export const clamp=(v:number,min=0,max=100)=>Math.min(max,Math.max(min,v));
 /** Compatibility adapter for consumers that still use Ability[]. */
 export function abilities(b:CharacterBuild,d:GameData):Ability[]{return modifiersToAbilities(collectCharacterModifiers(b,d));}
@@ -32,7 +33,7 @@ function deriveLegacy(b:CharacterBuild,d:GameData,a:Ability[]){const c=d.class.f
   const family=w?.subcategory??'hand',level=w&&g?getConfiguredUpgrade(w,g):0,effective=g?.ultimateWeapon||w?.rarity==='ultimate'?10+level:level;
   const up=d.upgradelevelbonus.find(x=>x.upgradeLevel===effective);
   const range=calculateWeaponRange({min:w?.minAttack??1,max:w?.maxAttack??2,statAttack:weaponStatContribution(family,stats,b.level,c.autoAttackFactors[family]??1,getFlatAbility(a,family+'attack')),flatDamage:getFlatAbility(a,'damage'),minAbility:getFlatAbility(a,'minability'),maxAbility:getFlatAbility(a,'maxability'),upgradeFactor:1+(up?.weaponAttack??0)/100,upgradeLevel:effective,spiritStrike:getRateAbility(a,'spiritstrike'),fp:Math.floor(apply(expression(c.maxFP,vars),'maxfp',a))});
-  return {...range,min:apply(range.min,'attack',a),max:apply(range.max,'attack',a),item:w};
+  return {...range,rawMin:range.min,rawMax:range.max,min:modifyAttack(range.min,getRateAbility(a,'attack'),getFlatAbility(a,'attack')).attack,max:modifyAttack(range.max,getRateAbility(a,'attack'),getFlatAbility(a,'attack')).attack,item:w};
  };
  const rightAttack=handAttack('rightHand')!,leftAttack=handAttack('leftHand'),fraction=leftAttack?b.coefficients.leftHandFrequency:0;const attackMin=rightAttack.min*(1-fraction)+(leftAttack?.min??0)*fraction,attackMax=rightAttack.max*(1-fraction)+(leftAttack?.max??0)*fraction;
  let armor=0;for(const s of slots){const g=b.equipment[s],x=catalogItem(d,g?.itemId);if(!x||!g||(!b.theoretical&&!canEquipItem(b,x,d,s)))continue;const u=d.upgradelevelbonus.find(u=>u.upgradeLevel===getConfiguredUpgrade(x,g));const key=s==='gauntlets'?'gauntletDefense':s==='shield'?'shieldDefense':s+'Defense';armor+=((x.minDefense??0)+(x.maxDefense??0))/2*(1+Number(u?.[key]??0)/100);}

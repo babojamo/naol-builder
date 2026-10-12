@@ -8,7 +8,7 @@ create table public.app_admin_invites (
 alter table public.app_admin_invites enable row level security;
 revoke all on public.app_admin_invites from public,anon,authenticated;
 grant all on public.app_admin_invites to service_role;
-insert into public.app_admin_invites(email) values('kevin.loquencio@gmail.com') on conflict(email) do nothing;
+-- Environment-specific invitations are provisioned by scripts/seed-admin.mjs.
 create or replace function public.claim_verified_admin(p_user uuid,p_email text)
 returns boolean language plpgsql security definer set search_path='' as $$
 declare invited public.app_admin_invites;
