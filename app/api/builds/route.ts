@@ -1,7 +1,26 @@
-import { env } from 'cloudflare:workers';
-import { parseBuild } from '../../../lib/persistence';
-import { data } from '../../../lib/flyff-server';import { validate } from '../../../combat/character';
-const owner=(r:Request)=>r.headers.get('oai-authenticated-user-id');
-export async function GET(r:Request){const uid=owner(r),id=new URL(r.url).searchParams.get('id');if(id){const row=await env.DB!.prepare('SELECT payload, shared, owner FROM builds WHERE id = ?').bind(id).first<{payload:string;shared:number;owner:string}>();if(!row||(!row.shared&&row.owner!==uid))return Response.json({error:'Build not found'},{status:404});return Response.json(JSON.parse(row.payload));}if(!uid)return Response.json([]);const rows=await env.DB!.prepare('SELECT payload FROM builds WHERE owner = ? ORDER BY updated_at DESC LIMIT 100').bind(uid).all<{payload:string}>();return Response.json(rows.results.map(x=>JSON.parse(x.payload)));}
-export async function POST(r:Request){const uid=owner(r);if(!uid)return Response.json({error:'Sign in to save across devices. Local saves are available without sign-in.'},{status:401});if(r.headers.get('origin')!==new URL(r.url).origin)return Response.json({error:'Origin mismatch'},{status:403});const text=await r.text();if(text.length>32000)return Response.json({error:'Build is too large'},{status:413});try{const body=JSON.parse(text),current=await data(),b=parseBuild(body.build,current);const errors=validate(b,current);if(errors.length&&!b.theoretical)return Response.json({error:errors.join('. ')},{status:400});const count=await env.DB!.prepare('SELECT COUNT(*) AS n FROM builds WHERE owner = ?').bind(uid).first<{n:number}>();const existing=await env.DB!.prepare('SELECT owner FROM builds WHERE id = ?').bind(b.id).first<{owner:string}>();if(existing&&existing.owner!==uid)return Response.json({error:'Build belongs to another user'},{status:403});if(!existing&&(count?.n??0)>=100)return Response.json({error:'100-build limit reached'},{status:429});await env.DB!.prepare('INSERT INTO builds (id,owner,name,payload,shared,updated_at) VALUES (?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET name=excluded.name,payload=excluded.payload,shared=excluded.shared,updated_at=excluded.updated_at WHERE builds.owner=excluded.owner').bind(b.id,uid,b.name,JSON.stringify(b),body.shared?1:0,new Date().toISOString()).run();return Response.json({id:b.id,shared:!!body.shared});}catch{return Response.json({error:'Invalid build payload'},{status:400});}}
-export async function DELETE(r:Request){const uid=owner(r);if(!uid||r.headers.get('origin')!==new URL(r.url).origin)return Response.json({error:'Unauthorized'},{status:403});const id=new URL(r.url).searchParams.get('id');await env.DB!.prepare('DELETE FROM builds WHERE id=? AND owner=?').bind(id,uid).run();return Response.json({deleted:true});}
+import {parseBuild} from '../../../lib/persistence';import {data} from '../../../lib/flyff-server';import {validate} from '../../../combat/character';
+import {serverClient,requestUser,sameOrigin,boundedText} from '../../../lib/supabase/server';import type {Tables,Json} from '../../../lib/supabase/database.types';
+const record=(r:Tables<'builds'>)=>({build:r.build_data,revision:r.revision,visibility:r.visibility,updatedAt:r.updated_at,slug:r.slug});
+const response=(body:unknown,status=200)=>Response.json(body,{status,headers:{'Cache-Control':'no-store'}});
+export async function GET(request:Request){try{
+ const db=serverClient(request),u=new URL(request.url),id=u.searchParams.get('id');
+ if(id){const {data:rows,error}=await db.rpc('get_shared_build',{p_key:id});if(error||!rows?.length)return response({error:'Build not found'},404);return response(rows[0].build_data);}
+ if(!await requestUser(request))return response([]);
+ const own=u.searchParams.get('record');
+ if(own){const {data:row,error}=await db.from('builds').select('*').eq('id',own).maybeSingle();if(error)throw error;return response(row?record(row):null);}
+ const {data:rows,error}=await db.from('builds').select('*').order('updated_at',{ascending:false}).limit(100);if(error)throw error;return response((rows??[]).map(record));
+ }catch{return response({error:'Cloud storage is temporarily unavailable.'},503);}}
+export async function POST(request:Request){
+ if(!sameOrigin(request))return response({error:'Origin mismatch'},403);
+ if(!await requestUser(request))return response({error:'Sign in to save to My Account.'},401);
+ let text:string;try{text=await boundedText(request,32000);}catch{return response({error:'Build is too large'},413);}
+ try{const body=JSON.parse(text),current=await data(),b=parseBuild(body.build,current);
+ if(!/^[a-f0-9-]{36}$/i.test(b.id))return response({error:'Import this legacy build as a new copy.'},400);
+ const errors=validate(b,current);if(errors.length&&!b.theoretical)return response({error:errors.join('. ')},400);
+ if(!Number.isInteger(body.expectedRevision)||body.expectedRevision<0)return response({error:'A cloud revision is required'},400);
+ if(body.visibility!==undefined&&!['private','unlisted','public'].includes(body.visibility))return response({error:'Invalid visibility'},400);
+ const {data:row,error}=await serverClient(request).rpc('save_build',{p_build:b as unknown as Json,p_expected_revision:body.expectedRevision,...(body.visibility!==undefined?{p_visibility:body.visibility}:{})});
+ if(error)return response({error:error.message},error.code==='PT409'?409:error.code==='42501'?403:400);
+ return response(record(row));
+ }catch{return response({error:'Invalid build payload or game cache unavailable'},400);}}
+export async function DELETE(request:Request){if(!sameOrigin(request)||!await requestUser(request))return response({error:'Unauthorized'},403);const id=new URL(request.url).searchParams.get('id');if(!id)return response({error:'Build ID required'},400);const {error}=await serverClient(request).from('builds').delete().eq('id',id);return error?response({error:'Deletion failed'},400):response({deleted:true});}
