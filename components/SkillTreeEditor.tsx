@@ -34,13 +34,13 @@ export default function SkillTreeEditor({
 }){
   const simulation=getSimulationSkillSelection(b,d);
   const [classId,setClassId]=useState(b.classId);
-  const [detailId,setDetailId]=useState<number|null>(simulation?.id??null);
+  const [detailId,setDetailId]=useState<number|null>(null);
   const [previewLevels,setPreviewLevels]=useState<Record<number,number>>({});
   const arrowId=useId().replace(/:/g,'');
 
   const progression=classProgression(b.classId,d);
   const tree=getSkillTree(classId,d);
-  const selected=d.skill.find(skill=>skill.id===(detailId??tree.normal[0]?.id??tree.skills[0]?.id));
+  const selected=detailId===null?undefined:d.skill.find(skill=>skill.id===detailId);
   const positioned=tree.normal.filter(skill=>skill.treePosition);
   const unpositioned=tree.normal.filter(skill=>!skill.treePosition);
   const coords=new Map(positioned.map(skill=>[
@@ -98,8 +98,8 @@ export default function SkillTreeEditor({
       }
       key={skill.id}
       style={position?{position:'absolute',left:position.x,top:position.y}:undefined}
-      onClick={()=>setDetailId(skill.id)}
-      aria-pressed={selected?.id===skill.id}
+      onClick={()=>setDetailId(current=>current===skill.id?null:skill.id)}
+      aria-pressed={detailId===skill.id}
       aria-label={skill.name+` · configured ${configured}/${maxSkillLevel(skill)}`}
       title={`${skill.name}\nRequired character level ${skill.level}\nWeapon: ${formatSkillWeaponRequirement(skill.weapon)}\n${skill.description}`}
     >
@@ -141,7 +141,7 @@ export default function SkillTreeEditor({
       </button>)}
     </div>
 
-    <div className="skill-tree-layout">
+    <div className={'skill-tree-layout '+(selected?'has-detail':'no-detail')}>
       <div>
         <h3>{d.class.find(row=>row.id===classId)?.name}</h3>
 
@@ -183,10 +183,9 @@ export default function SkillTreeEditor({
         </>}
       </div>
 
-      <aside className="skill-detail-panel" aria-live="polite">
-        {!selected&&<p>Select a skill to inspect its official requirements and effects.</p>}
+      {selected&&<aside className="skill-detail-panel" aria-live="polite">
         {selected&&<>
-          <h3>{selected.name}</h3>
+          <div className="skill-detail-header"><h3>{selected.name}</h3><button type="button" className="quiet skill-detail-close" aria-label="Close skill details" title="Close skill details" onClick={()=>setDetailId(null)}>×</button></div>
           <Icon kind="skill" file={selected.icon} name={selected.name}/>
           <p>{selected.description}</p>
           <p>
@@ -261,7 +260,7 @@ export default function SkillTreeEditor({
             Use for Simulation
           </button>}
         </>}
-      </aside>
+      </aside>}
     </div>
   </section>;
 }

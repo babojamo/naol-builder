@@ -1,0 +1,432 @@
+{
+  "source": "https://naol-builder.lokwensio.com/build/d8b91a09-ba82-4b7e-99b3-adbfcd5eb0f1",
+  "capturedOn": "2026-10-13",
+  "observedElementDefense": null,
+  "configuration": {
+    "classId": 36983,
+    "level": 189,
+    "sex": "male",
+    "baseStats": {
+      "dex": 15,
+      "int": 376,
+      "sta": 15,
+      "str": 15
+    },
+    "equipment": {
+      "mask": {
+        "awake": null,
+        "itemId": 33223,
+        "element": "none",
+        "piercings": [],
+        "normalUpgrade": 0,
+        "elementUpgrade": 0,
+        "fashionBlessings": []
+      },
+      "suit": {
+        "awake": null,
+        "itemId": 45802,
+        "element": "fire",
+        "piercings": [
+          576,
+          576,
+          576,
+          576
+        ],
+        "normalUpgrade": 8,
+        "additionalStat": {
+          "source": "stat-scroll",
+          "abilities": [
+            {
+              "add": 3,
+              "parameter": "int"
+            }
+          ]
+        },
+        "elementUpgrade": 7,
+        "fashionBlessings": []
+      },
+      "boots": {
+        "awake": null,
+        "itemId": 30879,
+        "element": "none",
+        "piercings": [],
+        "normalUpgrade": 8,
+        "additionalStat": {
+          "source": "stat-scroll",
+          "abilities": [
+            {
+              "add": 2,
+              "parameter": "int"
+            }
+          ]
+        },
+        "elementUpgrade": 0
+      },
+      "cloak": {
+        "awake": null,
+        "itemId": 1513,
+        "element": "none",
+        "piercings": [],
+        "normalUpgrade": 0,
+        "elementUpgrade": 0,
+        "fashionBlessings": [
+          {
+            "value": 3,
+            "source": "demon",
+            "parameter": "castingspeed"
+          },
+          {
+            "value": 0,
+            "source": "demon",
+            "parameter": "pvedamage"
+          }
+        ]
+      },
+      "ring1": {
+        "awake": null,
+        "itemId": 17780,
+        "element": "none",
+        "piercings": [],
+        "elementUpgrade": 0,
+        "accessoryUpgrade": 0,
+        "fashionBlessings": []
+      },
+      "ring2": {
+        "awake": null,
+        "itemId": 17780,
+        "element": "none",
+        "piercings": [],
+        "elementUpgrade": 0,
+        "accessoryUpgrade": 0,
+        "fashionBlessings": []
+      },
+      "helmet": {
+        "awake": null,
+        "itemId": 35825,
+        "element": "none",
+        "piercings": [],
+        "normalUpgrade": 8,
+        "additionalStat": {
+          "source": "stat-scroll",
+          "abilities": [
+            {
+              "add": 2,
+              "parameter": "int"
+            }
+          ]
+        },
+        "elementUpgrade": 0,
+        "fashionBlessings": []
+      },
+      "earring1": {
+        "awake": null,
+        "itemId": 16090,
+        "element": "none",
+        "piercings": [],
+        "elementUpgrade": 0,
+        "accessoryUpgrade": 0,
+        "fashionBlessings": []
+      },
+      "earring2": {
+        "awake": null,
+        "itemId": 16090,
+        "element": "none",
+        "piercings": [],
+        "elementUpgrade": 0,
+        "accessoryUpgrade": 0,
+        "fashionBlessings": []
+      },
+      "necklace": {
+        "awake": null,
+        "itemId": 17544,
+        "element": "none",
+        "piercings": [],
+        "elementUpgrade": 0,
+        "accessoryUpgrade": 0,
+        "fashionBlessings": []
+      },
+      "gauntlets": {
+        "awake": null,
+        "itemId": 46178,
+        "element": "none",
+        "piercings": [],
+        "normalUpgrade": 8,
+        "additionalStat": {
+          "source": "stat-scroll",
+          "abilities": [
+            {
+              "add": 3,
+              "parameter": "int"
+            }
+          ]
+        },
+        "elementUpgrade": 0,
+        "fashionBlessings": []
+      },
+      "rightHand": {
+        "awake": null,
+        "itemId": 42020,
+        "element": "fire",
+        "piercings": [
+          4565,
+          4565,
+          4565,
+          4565,
+          4565,
+          4565,
+          4565,
+          4565,
+          4565,
+          4565
+        ],
+        "weaponBonus": {
+          "type": "skill",
+          "value": 23,
+          "skillId": 5171
+        },
+        "baseStatRolls": [
+          {
+            "value": 32,
+            "abilityIndex": 0
+          },
+          {
+            "value": 41,
+            "abilityIndex": 1
+          },
+          {
+            "value": 33,
+            "abilityIndex": 2
+          },
+          {
+            "value": 11,
+            "abilityIndex": 4
+          }
+        ],
+        "additionalStat": {
+          "source": "drop",
+          "awakeId": 15,
+          "abilities": [
+            {
+              "add": 3,
+              "rate": false,
+              "parameter": "int"
+            }
+          ]
+        },
+        "elementUpgrade": 8,
+        "ultimateWeapon": {
+          "jewels": [
+            {
+              "index": 0,
+              "content": {
+                "kind": "jewel",
+                "itemId": 17545
+              }
+            },
+            {
+              "index": 1,
+              "content": {
+                "kind": "jewel",
+                "itemId": 8441
+              }
+            },
+            {
+              "index": 2,
+              "content": {
+                "kind": "jewel",
+                "itemId": 17545
+              }
+            },
+            {
+              "index": 3,
+              "content": {
+                "kind": "jewel",
+                "itemId": 11097
+              }
+            },
+            {
+              "index": 4,
+              "content": {
+                "kind": "jewel",
+                "itemId": 11097
+              }
+            }
+          ],
+          "bonuses": {
+            "base": [
+              {
+                "rate": true,
+                "value": 7.9,
+                "parameter": "attack"
+              },
+              {
+                "rate": true,
+                "value": 8,
+                "parameter": "block"
+              }
+            ],
+            "plus6": {
+              "rate": true,
+              "value": 0.8,
+              "parameter": "stealhp"
+            }
+          },
+          "ultimateUpgrade": 6
+        },
+        "fashionBlessings": []
+      },
+      "fashionHead": {
+        "awake": null,
+        "itemId": 46329,
+        "element": "none",
+        "piercings": [],
+        "normalUpgrade": 0,
+        "elementUpgrade": 0,
+        "fashionBlessings": [
+          {
+            "value": 3,
+            "source": "demon",
+            "parameter": "castingspeed"
+          },
+          {
+            "value": 0,
+            "source": "demon",
+            "parameter": "maxhp"
+          }
+        ]
+      },
+      "fashionSuit": {
+        "awake": null,
+        "itemId": 37504,
+        "element": "none",
+        "piercings": [],
+        "normalUpgrade": 0,
+        "elementUpgrade": 0,
+        "fashionBlessings": [
+          {
+            "value": 0,
+            "source": "demon",
+            "parameter": "criticaldamage"
+          },
+          {
+            "value": 3,
+            "source": "demon",
+            "parameter": "castingspeed"
+          }
+        ]
+      },
+      "fashionShoes": {
+        "awake": null,
+        "itemId": 33355,
+        "element": "none",
+        "piercings": [],
+        "normalUpgrade": 0,
+        "elementUpgrade": 0,
+        "fashionBlessings": [
+          {
+            "value": 2,
+            "source": "demon",
+            "parameter": "castingspeed"
+          }
+        ]
+      },
+      "fashionGloves": {
+        "awake": null,
+        "itemId": 33603,
+        "element": "none",
+        "piercings": [],
+        "normalUpgrade": 0,
+        "elementUpgrade": 0,
+        "fashionBlessings": [
+          {
+            "value": 0,
+            "source": "demon",
+            "parameter": "pvedamage"
+          },
+          {
+            "value": 2,
+            "source": "demon",
+            "parameter": "castingspeed"
+          }
+        ]
+      }
+    },
+    "skills": [
+      {
+        "id": 7701,
+        "level": 10
+      },
+      {
+        "id": 2082,
+        "level": 10
+      },
+      {
+        "id": 4688,
+        "level": 10
+      },
+      {
+        "id": 6320,
+        "level": 10
+      },
+      {
+        "id": 7442,
+        "level": 10
+      },
+      {
+        "id": 8454,
+        "level": 10
+      },
+      {
+        "id": 41777,
+        "level": 5
+      },
+      {
+        "id": 46158,
+        "level": 5
+      },
+      {
+        "id": 51900,
+        "level": 5
+      },
+      {
+        "id": 57928,
+        "level": 5
+      },
+      {
+        "id": 58761,
+        "level": 5
+      },
+      {
+        "id": 29270,
+        "level": 5
+      },
+      {
+        "id": 29839,
+        "level": 5
+      },
+      {
+        "id": 48592,
+        "level": 5
+      },
+      {
+        "id": 39301,
+        "level": 5
+      }
+    ],
+    "simulationSkill": null,
+    "selfBuffs": [],
+    "buffs": [],
+    "bonuses": [],
+    "support": {
+      "skillId": null,
+      "buffSkills": [],
+      "skillLevel": 1,
+      "allyClassId": null,
+      "allyIncomingHealing": 0
+    },
+    "mode": "pve",
+    "attackType": "skill",
+    "targetId": 47494,
+    "theoretical": false
+  }
+}
