@@ -1,0 +1,11 @@
+{
+  "source": "User-supplied suit element brief, 2026-10-13; reported in-game observation",
+  "itemName": "Virashon Suit",
+  "element": "fire",
+  "upgrade": 7,
+  "observedDisplayedDefense": 5,
+  "apiElementDefense": 6.42,
+  "expectedWindResistance": 14,
+  "expectedWaterResistance": -14,
+  "displayFormulaConfidence": "unsupported"
+}
