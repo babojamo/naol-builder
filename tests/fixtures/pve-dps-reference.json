@@ -1,0 +1,1823 @@
+{
+  "build": {
+    "id": "d3e81801-598d-4db9-95b3-7503eaaf2869",
+    "pet": {
+      "id": 6296,
+      "tier": "S",
+      "levels": {
+        "A": 7,
+        "B": 5,
+        "C": 4,
+        "D": 3,
+        "E": 2,
+        "F": 1,
+        "S": 9
+      }
+    },
+    "sex": "male",
+    "mode": "pvp",
+    "name": "Matokzz #5A885 Build",
+    "role": "damage",
+    "buffs": [
+      {
+        "id": 6858,
+        "level": 20
+      },
+      {
+        "id": 690,
+        "level": 20
+      },
+      {
+        "id": 1029,
+        "level": 20
+      },
+      {
+        "id": 3721,
+        "level": 20
+      },
+      {
+        "id": 6845,
+        "level": 10
+      },
+      {
+        "id": 9852,
+        "level": 20
+      },
+      {
+        "id": 7661,
+        "level": 20
+      },
+      {
+        "id": 39,
+        "level": 10
+      },
+      {
+        "id": 1129,
+        "level": 20
+      },
+      {
+        "id": 2678,
+        "level": 20
+      },
+      {
+        "id": 579,
+        "level": 10
+      },
+      {
+        "id": 3964,
+        "level": 20
+      },
+      {
+        "id": 9047,
+        "level": 10
+      },
+      {
+        "id": 3494,
+        "level": 20
+      }
+    ],
+    "level": 190,
+    "skills": [
+      {
+        "id": 2030,
+        "level": 20
+      },
+      {
+        "id": 55125,
+        "level": 5
+      },
+      {
+        "id": 59068,
+        "level": 5
+      },
+      {
+        "id": 37102,
+        "level": 5
+      },
+      {
+        "id": 24547,
+        "level": 5
+      }
+    ],
+    "bonuses": [],
+    "classId": 35045,
+    "purpose": "Leveling",
+    "support": {
+      "skillId": null,
+      "buffSkills": [],
+      "skillLevel": 1,
+      "allyClassId": null,
+      "allyIncomingHealing": 0
+    },
+    "version": 3,
+    "metadata": {
+      "demo": false,
+      "budget": "Mid-range",
+      "survival": 30,
+      "createdAt": "2026-10-13T14:44:20.399Z",
+      "recommendations": [
+        "Created from screenshots. Review extracted fields against the game.",
+        "No Raised Pet is visibly identified. Equipment names and stats shown in tooltips were transcribed; displayed stat totals are separate from allocated points.",
+        "rightHand: Bonus Awakening needs manual review.",
+        "rightHand: random-stat text needs manual review of its source and bonus group: DEX+3",
+        "cloak: Additional Stat needs confirmation."
+      ]
+    },
+    "opponent": {
+      "hp": 20000,
+      "id": -1,
+      "dex": 100,
+      "name": "Training opponent",
+      "rank": "player",
+      "block": 20,
+      "level": 120,
+      "parry": 0,
+      "defense": 900,
+      "element": "none",
+      "pvpReduction": 15,
+      "criticalResist": 10
+    },
+    "targetId": 49835,
+    "archetype": "one-v-one",
+    "baseStats": {
+      "dex": 393,
+      "int": 15,
+      "sta": 15,
+      "str": 15
+    },
+    "equipment": {
+      "mask": {
+        "awake": null,
+        "itemId": 33223,
+        "element": "none",
+        "piercings": [],
+        "normalUpgrade": 0,
+        "elementUpgrade": 0,
+        "fashionBlessings": []
+      },
+      "suit": {
+        "awake": null,
+        "itemId": 21142,
+        "element": "electricity",
+        "piercings": [
+          576,
+          576,
+          576,
+          576
+        ],
+        "normalUpgrade": 10,
+        "elementUpgrade": 10,
+        "fashionBlessings": []
+      },
+      "boots": {
+        "awake": null,
+        "itemId": 37283,
+        "element": "none",
+        "piercings": [],
+        "normalUpgrade": 10,
+        "elementUpgrade": 0,
+        "fashionBlessings": []
+      },
+      "cloak": {
+        "awake": null,
+        "itemId": 19985,
+        "element": "none",
+        "piercings": [],
+        "normalUpgrade": 0,
+        "elementUpgrade": 0,
+        "fashionBlessings": [
+          {
+            "value": 1,
+            "source": "demon",
+            "parameter": "castingspeed"
+          }
+        ]
+      },
+      "ring1": {
+        "awake": null,
+        "itemId": 15918,
+        "element": "none",
+        "piercings": [],
+        "elementUpgrade": 0,
+        "accessoryUpgrade": 10,
+        "fashionBlessings": []
+      },
+      "ring2": {
+        "awake": null,
+        "itemId": 15918,
+        "element": "none",
+        "piercings": [],
+        "elementUpgrade": 0,
+        "accessoryUpgrade": 10,
+        "fashionBlessings": []
+      },
+      "helmet": {
+        "awake": null,
+        "itemId": 20367,
+        "element": "none",
+        "piercings": [],
+        "normalUpgrade": 10,
+        "elementUpgrade": 0,
+        "fashionBlessings": []
+      },
+      "earring1": {
+        "awake": null,
+        "itemId": 13637,
+        "element": "none",
+        "piercings": [],
+        "elementUpgrade": 0,
+        "accessoryUpgrade": 0,
+        "fashionBlessings": []
+      },
+      "earring2": {
+        "awake": null,
+        "itemId": 13637,
+        "element": "none",
+        "piercings": [],
+        "elementUpgrade": 0,
+        "accessoryUpgrade": 0,
+        "fashionBlessings": []
+      },
+      "necklace": {
+        "awake": null,
+        "itemId": 10321,
+        "element": "none",
+        "piercings": [],
+        "elementUpgrade": 0,
+        "accessoryUpgrade": 0,
+        "fashionBlessings": []
+      },
+      "gauntlets": {
+        "awake": null,
+        "itemId": 34721,
+        "element": "none",
+        "piercings": [],
+        "normalUpgrade": 10,
+        "elementUpgrade": 0,
+        "fashionBlessings": []
+      },
+      "rightHand": {
+        "awake": null,
+        "itemId": 42906,
+        "element": "water",
+        "piercings": [
+          1961,
+          1961,
+          1961,
+          1961,
+          1961,
+          1961,
+          1961,
+          1961,
+          1961,
+          1961
+        ],
+        "weaponBonus": {
+          "type": "skill",
+          "value": 25,
+          "skillId": 6910
+        },
+        "baseStatRolls": [
+          {
+            "value": 85.8,
+            "abilityIndex": 0
+          },
+          {
+            "value": 22,
+            "abilityIndex": 1
+          },
+          {
+            "value": 2.9,
+            "abilityIndex": 2
+          },
+          {
+            "value": 15,
+            "abilityIndex": 3
+          }
+        ],
+        "additionalStat": {
+          "source": "stat-scroll",
+          "abilities": [
+            {
+              "add": 4,
+              "parameter": "dex"
+            }
+          ]
+        },
+        "elementUpgrade": 10,
+        "ultimateWeapon": {
+          "jewels": [
+            {
+              "index": 0,
+              "content": {
+                "kind": "rune",
+                "itemId": 17105
+              }
+            },
+            {
+              "index": 1,
+              "content": {
+                "kind": "jewel",
+                "itemId": 11635
+              }
+            },
+            {
+              "index": 2,
+              "content": {
+                "kind": "jewel",
+                "itemId": 11635
+              }
+            },
+            {
+              "index": 3,
+              "content": {
+                "kind": "jewel",
+                "itemId": 11635
+              }
+            },
+            {
+              "index": 4,
+              "content": {
+                "kind": "jewel",
+                "itemId": 11635
+              }
+            },
+            {
+              "index": 5,
+              "content": {
+                "kind": "jewel",
+                "itemId": 11635
+              }
+            },
+            {
+              "index": 6,
+              "content": {
+                "kind": "jewel",
+                "itemId": 11635
+              }
+            },
+            {
+              "index": 7,
+              "content": {
+                "kind": "jewel",
+                "itemId": 12419
+              }
+            },
+            {
+              "index": 8,
+              "content": {
+                "kind": "rune",
+                "itemId": 15120
+              }
+            },
+            {
+              "index": 9,
+              "content": {
+                "kind": "jewel",
+                "itemId": 11635
+              }
+            }
+          ],
+          "bonuses": {
+            "base": [
+              {
+                "rate": true,
+                "value": 9,
+                "parameter": "attack"
+              },
+              {
+                "rate": true,
+                "value": 13,
+                "parameter": "criticaldamage"
+              }
+            ],
+            "plus6": {
+              "rate": true,
+              "value": 8,
+              "parameter": "pvedamage"
+            },
+            "plus10": {
+              "rate": false,
+              "value": 12,
+              "parameter": "dex"
+            }
+          },
+          "ultimateUpgrade": 10
+        }
+      },
+      "fashionHead": {
+        "awake": null,
+        "itemId": 22483,
+        "element": "none",
+        "piercings": [],
+        "normalUpgrade": 0,
+        "elementUpgrade": 0,
+        "fashionBlessings": [
+          {
+            "value": 2,
+            "source": "demon",
+            "parameter": "actionspeed"
+          },
+          {
+            "value": 1,
+            "source": "demon",
+            "parameter": "parry"
+          }
+        ]
+      },
+      "fashionSuit": {
+        "awake": null,
+        "itemId": 43143,
+        "element": "none",
+        "piercings": [],
+        "normalUpgrade": 0,
+        "elementUpgrade": 0,
+        "fashionBlessings": [
+          {
+            "value": 0,
+            "source": "demon",
+            "parameter": "parry"
+          },
+          {
+            "value": 3,
+            "source": "demon",
+            "parameter": "actionspeed"
+          }
+        ]
+      },
+      "fashionShoes": {
+        "awake": null,
+        "itemId": 33355,
+        "element": "none",
+        "piercings": [],
+        "normalUpgrade": 0,
+        "elementUpgrade": 0,
+        "fashionBlessings": [
+          {
+            "value": 3,
+            "source": "demon",
+            "parameter": "actionspeed"
+          },
+          {
+            "value": 0,
+            "source": "demon",
+            "parameter": "rangedblock"
+          }
+        ]
+      },
+      "fashionGloves": {
+        "awake": null,
+        "itemId": 55330,
+        "element": "none",
+        "piercings": [],
+        "normalUpgrade": 0,
+        "elementUpgrade": 0,
+        "fashionBlessings": [
+          {
+            "value": 2,
+            "source": "demon",
+            "parameter": "actionspeed"
+          },
+          {
+            "value": 0,
+            "source": "demon",
+            "parameter": "magicdefense"
+          }
+        ]
+      }
+    },
+    "selfBuffs": [
+      {
+        "id": 24775,
+        "level": 5
+      },
+      {
+        "id": 3564,
+        "level": 10
+      },
+      {
+        "id": 317,
+        "level": 20
+      },
+      {
+        "id": 32144,
+        "level": 5
+      }
+    ],
+    "attackType": "auto",
+    "activeItems": [],
+    "theoretical": false,
+    "coefficients": {
+      "hitBase": 75,
+      "dexHitFactor": 0.2,
+      "elementScale": 0.01,
+      "defenseWeight": 1,
+      "pvpMultiplier": 0.6,
+      "levelHitFactor": 1,
+      "attacksPerSecond": 2,
+      "blockedMultiplier": 0.1,
+      "leftHandFrequency": 0.5,
+      "leftHandMultiplier": 1,
+      "statPointsPerLevel": 2
+    },
+    "scoreWeights": {
+      "healing": 30,
+      "buffPower": 25,
+      "castSpeed": 15,
+      "mpSustain": 15,
+      "survivability": 15
+    },
+    "observedStats": {
+      "DEX": 633,
+      "INT": 74,
+      "STA": 79,
+      "STR": 74,
+      "maxfp": 586,
+      "maxhp": 32642,
+      "maxmp": 1277,
+      "parry": 317,
+      "speed": 153,
+      "attack": 41,
+      "defense": 8,
+      "hitrate": 233,
+      "bowrange": 140,
+      "pvedamage": 39,
+      "pvpdamage": 7,
+      "meleeblock": 100,
+      "resistance": -20,
+      "actionspeed": 140,
+      "attackspeed": 100,
+      "rangedblock": 100,
+      "castingspeed": 121,
+      "magicdefense": 615,
+      "hprestoration": 32,
+      "criticalchance": 147.8,
+      "criticaldamage": 114,
+      "criticalresist": 14,
+      "blockpenetration": 14.6,
+      "hprecoveryonkill": 750,
+      "pvedamagereduction": 26
+    },
+    "schemaVersion": 3,
+    "handPreference": "auto",
+    "simulationSkill": null,
+    "targetHealthPercent": 100
+  },
+  "itemOverrides": [
+    {
+      "id": 10321,
+      "consumable": false,
+      "durationRealTime": false,
+      "isActive": true,
+      "name": "Marksman's Gore Necklace",
+      "description": "Increases Max HP. Can be upgraded with a Sunstone up to Ultimate level 10.",
+      "category": "jewelry",
+      "subcategory": "necklace",
+      "icon": "genjewnechpulti.png",
+      "level": 1,
+      "rarity": "ultimate",
+      "dismantle": [
+        {
+          "item": 12055,
+          "count": 79,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 0
+        },
+        {
+          "item": 19291,
+          "count": 486,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 0
+        },
+        {
+          "item": 12055,
+          "count": 134,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 1
+        },
+        {
+          "item": 19291,
+          "count": 486,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 1
+        },
+        {
+          "item": 12055,
+          "count": 293,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 2
+        },
+        {
+          "item": 19291,
+          "count": 486,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 2
+        },
+        {
+          "item": 12055,
+          "count": 586,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 3
+        },
+        {
+          "item": 19291,
+          "count": 486,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 3
+        },
+        {
+          "item": 12055,
+          "count": 900,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 4
+        },
+        {
+          "item": 19291,
+          "count": 486,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 4
+        },
+        {
+          "item": 12055,
+          "count": 1134,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 5
+        },
+        {
+          "item": 19291,
+          "count": 486,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 5
+        }
+      ],
+      "upgradeLevels": [
+        {
+          "abilities": [
+            {
+              "add": 1180,
+              "rate": false,
+              "parameter": "maxhp"
+            },
+            {
+              "add": 32,
+              "rate": true,
+              "parameter": "hprestoration"
+            }
+          ],
+          "upgradeLevel": 0,
+          "requiredLevel": 120
+        },
+        {
+          "abilities": [
+            {
+              "add": 1245,
+              "rate": false,
+              "parameter": "maxhp"
+            },
+            {
+              "add": 34,
+              "rate": true,
+              "parameter": "hprestoration"
+            }
+          ],
+          "upgradeLevel": 1,
+          "requiredLevel": 125
+        },
+        {
+          "abilities": [
+            {
+              "add": 1310,
+              "rate": false,
+              "parameter": "maxhp"
+            },
+            {
+              "add": 36,
+              "rate": true,
+              "parameter": "hprestoration"
+            }
+          ],
+          "upgradeLevel": 2,
+          "requiredLevel": 130
+        },
+        {
+          "abilities": [
+            {
+              "add": 1385,
+              "rate": false,
+              "parameter": "maxhp"
+            },
+            {
+              "add": 38,
+              "rate": true,
+              "parameter": "hprestoration"
+            }
+          ],
+          "upgradeLevel": 3,
+          "requiredLevel": 135
+        },
+        {
+          "abilities": [
+            {
+              "add": 1450,
+              "rate": false,
+              "parameter": "maxhp"
+            },
+            {
+              "add": 40,
+              "rate": true,
+              "parameter": "hprestoration"
+            }
+          ],
+          "upgradeLevel": 4,
+          "requiredLevel": 140
+        },
+        {
+          "abilities": [
+            {
+              "add": 1550,
+              "rate": false,
+              "parameter": "maxhp"
+            },
+            {
+              "add": 45,
+              "rate": true,
+              "parameter": "hprestoration"
+            }
+          ],
+          "upgradeLevel": 5,
+          "requiredLevel": 145
+        },
+        {
+          "abilities": [
+            {
+              "add": 1630,
+              "rate": false,
+              "parameter": "maxhp"
+            },
+            {
+              "add": 50,
+              "rate": true,
+              "parameter": "hprestoration"
+            }
+          ],
+          "upgradeLevel": 6,
+          "requiredLevel": 150
+        },
+        {
+          "abilities": [
+            {
+              "add": 1710,
+              "rate": false,
+              "parameter": "maxhp"
+            },
+            {
+              "add": 54,
+              "rate": true,
+              "parameter": "hprestoration"
+            }
+          ],
+          "upgradeLevel": 7,
+          "requiredLevel": 155
+        },
+        {
+          "abilities": [
+            {
+              "add": 1790,
+              "rate": false,
+              "parameter": "maxhp"
+            },
+            {
+              "add": 58,
+              "rate": true,
+              "parameter": "hprestoration"
+            }
+          ],
+          "upgradeLevel": 8,
+          "requiredLevel": 160
+        },
+        {
+          "abilities": [
+            {
+              "add": 1870,
+              "rate": false,
+              "parameter": "maxhp"
+            },
+            {
+              "add": 62,
+              "rate": true,
+              "parameter": "hprestoration"
+            }
+          ],
+          "upgradeLevel": 9,
+          "requiredLevel": 165
+        },
+        {
+          "abilities": [
+            {
+              "add": 2000,
+              "rate": false,
+              "parameter": "maxhp"
+            },
+            {
+              "add": 68,
+              "rate": true,
+              "parameter": "hprestoration"
+            }
+          ],
+          "upgradeLevel": 10,
+          "requiredLevel": 170
+        }
+      ],
+      "element": "none"
+    },
+    {
+      "id": 11635,
+      "consumable": false,
+      "durationRealTime": false,
+      "isActive": true,
+      "name": "Shining Onyx (6)",
+      "description": "Gives +60 Attack Power when applied to a ultimate weapon. Can only be attached once.",
+      "category": "material",
+      "subcategory": "ultimatejewel",
+      "icon": "syssysscrshnonyx(6).png",
+      "level": 1,
+      "rarity": "rare",
+      "minimumTargetItemLevel": 105,
+      "abilities": [
+        {
+          "add": 60,
+          "rate": false,
+          "parameter": "attack"
+        }
+      ],
+      "element": "none"
+    },
+    {
+      "id": 12419,
+      "consumable": false,
+      "durationRealTime": false,
+      "isActive": true,
+      "name": "Shining Emerald (6)",
+      "description": "Gives +6 Dexterity when applied to a ultimate weapon. Can only be attached once.",
+      "category": "material",
+      "subcategory": "ultimatejewel",
+      "icon": "syssysscrshnemerald(6).png",
+      "level": 1,
+      "rarity": "rare",
+      "minimumTargetItemLevel": 105,
+      "abilities": [
+        {
+          "add": 6,
+          "rate": false,
+          "parameter": "dex"
+        }
+      ],
+      "element": "none"
+    },
+    {
+      "id": 13637,
+      "consumable": false,
+      "durationRealTime": false,
+      "isActive": true,
+      "name": "Marksman's Demol Earring",
+      "description": "Increases Attack Power. Can be upgraded with a Sunstone up to Ultimate level 10.",
+      "category": "jewelry",
+      "subcategory": "earring",
+      "icon": "genjeweardemolulti.png",
+      "level": 1,
+      "rarity": "ultimate",
+      "dismantle": [
+        {
+          "item": 12055,
+          "count": 79,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 0
+        },
+        {
+          "item": 19291,
+          "count": 324,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 0
+        },
+        {
+          "item": 12055,
+          "count": 134,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 1
+        },
+        {
+          "item": 19291,
+          "count": 324,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 1
+        },
+        {
+          "item": 12055,
+          "count": 293,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 2
+        },
+        {
+          "item": 19291,
+          "count": 324,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 2
+        },
+        {
+          "item": 12055,
+          "count": 586,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 3
+        },
+        {
+          "item": 19291,
+          "count": 324,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 3
+        },
+        {
+          "item": 12055,
+          "count": 900,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 4
+        },
+        {
+          "item": 19291,
+          "count": 324,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 4
+        },
+        {
+          "item": 12055,
+          "count": 1134,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 5
+        },
+        {
+          "item": 19291,
+          "count": 324,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 5
+        }
+      ],
+      "upgradeLevels": [
+        {
+          "abilities": [
+            {
+              "add": 460,
+              "rate": false,
+              "parameter": "damage"
+            }
+          ],
+          "upgradeLevel": 0,
+          "requiredLevel": 120
+        },
+        {
+          "abilities": [
+            {
+              "add": 470,
+              "rate": false,
+              "parameter": "damage"
+            }
+          ],
+          "upgradeLevel": 1,
+          "requiredLevel": 125
+        },
+        {
+          "abilities": [
+            {
+              "add": 480,
+              "rate": false,
+              "parameter": "damage"
+            }
+          ],
+          "upgradeLevel": 2,
+          "requiredLevel": 130
+        },
+        {
+          "abilities": [
+            {
+              "add": 490,
+              "rate": false,
+              "parameter": "damage"
+            }
+          ],
+          "upgradeLevel": 3,
+          "requiredLevel": 135
+        },
+        {
+          "abilities": [
+            {
+              "add": 500,
+              "rate": false,
+              "parameter": "damage"
+            }
+          ],
+          "upgradeLevel": 4,
+          "requiredLevel": 140
+        },
+        {
+          "abilities": [
+            {
+              "add": 540,
+              "rate": false,
+              "parameter": "damage"
+            }
+          ],
+          "upgradeLevel": 5,
+          "requiredLevel": 145
+        },
+        {
+          "abilities": [
+            {
+              "add": 560,
+              "rate": false,
+              "parameter": "damage"
+            }
+          ],
+          "upgradeLevel": 6,
+          "requiredLevel": 150
+        },
+        {
+          "abilities": [
+            {
+              "add": 580,
+              "rate": false,
+              "parameter": "damage"
+            }
+          ],
+          "upgradeLevel": 7,
+          "requiredLevel": 155
+        },
+        {
+          "abilities": [
+            {
+              "add": 600,
+              "rate": false,
+              "parameter": "damage"
+            }
+          ],
+          "upgradeLevel": 8,
+          "requiredLevel": 160
+        },
+        {
+          "abilities": [
+            {
+              "add": 620,
+              "rate": false,
+              "parameter": "damage"
+            }
+          ],
+          "upgradeLevel": 9,
+          "requiredLevel": 165
+        },
+        {
+          "abilities": [
+            {
+              "add": 680,
+              "rate": false,
+              "parameter": "damage"
+            }
+          ],
+          "upgradeLevel": 10,
+          "requiredLevel": 170
+        }
+      ],
+      "element": "none"
+    },
+    {
+      "id": 15120,
+      "consumable": false,
+      "durationRealTime": false,
+      "isActive": true,
+      "name": "Rune of Critical Chance",
+      "description": "Gives +10% critical chance when applied to a ultimate weapon. Can only be attached once.",
+      "category": "material",
+      "subcategory": "ultimatejewel",
+      "icon": "itm_syssysbarunarune02.png",
+      "level": 1,
+      "rarity": "unique",
+      "minimumTargetItemLevel": 105,
+      "abilities": [
+        {
+          "add": 10,
+          "rate": true,
+          "parameter": "criticalchance"
+        }
+      ],
+      "element": "none"
+    },
+    {
+      "id": 15918,
+      "consumable": false,
+      "durationRealTime": false,
+      "isActive": true,
+      "name": "Marksman's Ring",
+      "description": "Increases DEX. Can be upgraded with a Sunstone up to Ultimate level 10.",
+      "category": "jewelry",
+      "subcategory": "ring",
+      "icon": "genjewrinmarksman.png",
+      "level": 1,
+      "rarity": "ultimate",
+      "dismantle": [
+        {
+          "item": 12055,
+          "count": 79,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 0
+        },
+        {
+          "item": 19291,
+          "count": 432,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 0
+        },
+        {
+          "item": 12055,
+          "count": 134,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 1
+        },
+        {
+          "item": 19291,
+          "count": 432,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 1
+        },
+        {
+          "item": 12055,
+          "count": 293,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 2
+        },
+        {
+          "item": 19291,
+          "count": 432,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 2
+        },
+        {
+          "item": 12055,
+          "count": 586,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 3
+        },
+        {
+          "item": 19291,
+          "count": 432,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 3
+        },
+        {
+          "item": 12055,
+          "count": 900,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 4
+        },
+        {
+          "item": 19291,
+          "count": 432,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 4
+        },
+        {
+          "item": 12055,
+          "count": 1134,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 5
+        },
+        {
+          "item": 19291,
+          "count": 432,
+          "saveElement": false,
+          "saveUpgrade": false,
+          "savePiercing": false,
+          "inputUpgradeLevel": 5
+        }
+      ],
+      "upgradeLevels": [
+        {
+          "abilities": [
+            {
+              "add": 45,
+              "rate": false,
+              "parameter": "dex"
+            },
+            {
+              "add": 5,
+              "rate": true,
+              "parameter": "criticaldamage"
+            }
+          ],
+          "upgradeLevel": 0,
+          "requiredLevel": 120
+        },
+        {
+          "abilities": [
+            {
+              "add": 47,
+              "rate": false,
+              "parameter": "dex"
+            },
+            {
+              "add": 5,
+              "rate": true,
+              "parameter": "criticaldamage"
+            }
+          ],
+          "upgradeLevel": 1,
+          "requiredLevel": 125
+        },
+        {
+          "abilities": [
+            {
+              "add": 49,
+              "rate": false,
+              "parameter": "dex"
+            },
+            {
+              "add": 5,
+              "rate": true,
+              "parameter": "criticaldamage"
+            }
+          ],
+          "upgradeLevel": 2,
+          "requiredLevel": 130
+        },
+        {
+          "abilities": [
+            {
+              "add": 51,
+              "rate": false,
+              "parameter": "dex"
+            },
+            {
+              "add": 6,
+              "rate": true,
+              "parameter": "criticaldamage"
+            }
+          ],
+          "upgradeLevel": 3,
+          "requiredLevel": 135
+        },
+        {
+          "abilities": [
+            {
+              "add": 55,
+              "rate": false,
+              "parameter": "dex"
+            },
+            {
+              "add": 6,
+              "rate": true,
+              "parameter": "criticaldamage"
+            }
+          ],
+          "upgradeLevel": 4,
+          "requiredLevel": 140
+        },
+        {
+          "abilities": [
+            {
+              "add": 60,
+              "rate": false,
+              "parameter": "dex"
+            },
+            {
+              "add": 7,
+              "rate": true,
+              "parameter": "criticaldamage"
+            }
+          ],
+          "upgradeLevel": 5,
+          "requiredLevel": 145
+        },
+        {
+          "abilities": [
+            {
+              "add": 64,
+              "rate": false,
+              "parameter": "dex"
+            },
+            {
+              "add": 8,
+              "rate": true,
+              "parameter": "criticaldamage"
+            }
+          ],
+          "upgradeLevel": 6,
+          "requiredLevel": 150
+        },
+        {
+          "abilities": [
+            {
+              "add": 68,
+              "rate": false,
+              "parameter": "dex"
+            },
+            {
+              "add": 8,
+              "rate": true,
+              "parameter": "criticaldamage"
+            }
+          ],
+          "upgradeLevel": 7,
+          "requiredLevel": 155
+        },
+        {
+          "abilities": [
+            {
+              "add": 72,
+              "rate": false,
+              "parameter": "dex"
+            },
+            {
+              "add": 9,
+              "rate": true,
+              "parameter": "criticaldamage"
+            }
+          ],
+          "upgradeLevel": 8,
+          "requiredLevel": 160
+        },
+        {
+          "abilities": [
+            {
+              "add": 76,
+              "rate": false,
+              "parameter": "dex"
+            },
+            {
+              "add": 9,
+              "rate": true,
+              "parameter": "criticaldamage"
+            }
+          ],
+          "upgradeLevel": 9,
+          "requiredLevel": 165
+        },
+        {
+          "abilities": [
+            {
+              "add": 82,
+              "rate": false,
+              "parameter": "dex"
+            },
+            {
+              "add": 10,
+              "rate": true,
+              "parameter": "criticaldamage"
+            }
+          ],
+          "upgradeLevel": 10,
+          "requiredLevel": 170
+        }
+      ],
+      "element": "none"
+    },
+    {
+      "id": 17105,
+      "consumable": false,
+      "durationRealTime": false,
+      "isActive": true,
+      "name": "Rune of Attack",
+      "description": "Gives +10% attack power when applied to a ultimate weapon. Can only be attached once.",
+      "category": "material",
+      "subcategory": "ultimatejewel",
+      "icon": "itm_syssysbarunarune09-32.png",
+      "level": 1,
+      "rarity": "unique",
+      "minimumTargetItemLevel": 105,
+      "abilities": [
+        {
+          "add": 10,
+          "rate": true,
+          "parameter": "attack"
+        }
+      ],
+      "element": "none"
+    },
+    {
+      "id": 1961,
+      "consumable": false,
+      "durationRealTime": false,
+      "isActive": true,
+      "name": "Thorn Card (A)",
+      "description": "Gives Critical Damage +3% when applied to a weapon or shield.",
+      "category": "material",
+      "subcategory": "piercingcard",
+      "icon": "genmatelepiercard_12_thorn.png",
+      "level": 1,
+      "rarity": "veryrare",
+      "minimumTargetItemLevel": 105,
+      "abilities": [
+        {
+          "add": 3,
+          "rate": true,
+          "parameter": "criticaldamage"
+        }
+      ],
+      "element": "wind"
+    },
+    {
+      "id": 19985,
+      "consumable": false,
+      "durationRealTime": false,
+      "isActive": true,
+      "name": "Cloak of Coral",
+      "description": "null",
+      "category": "fashion",
+      "subcategory": "cloak",
+      "icon": "cloak_of_coral.png",
+      "level": 1,
+      "rarity": "common",
+      "abilities": [
+        {
+          "add": 200,
+          "rate": false,
+          "parameter": "maxhp"
+        },
+        {
+          "add": 5,
+          "rate": true,
+          "parameter": "speed"
+        }
+      ],
+      "element": "none"
+    },
+    {
+      "id": 20367,
+      "consumable": false,
+      "durationRealTime": false,
+      "isActive": true,
+      "name": "Lenvire Helmet",
+      "description": "null",
+      "category": "armor",
+      "subcategory": "helmet",
+      "icon": "mcracksset02hair-et01.png",
+      "class": 35045,
+      "sex": "male",
+      "level": 180,
+      "rarity": "veryrare",
+      "minDefense": 1310,
+      "maxDefense": 1315,
+      "element": "none"
+    },
+    {
+      "id": 21142,
+      "consumable": false,
+      "durationRealTime": false,
+      "isActive": true,
+      "name": "Lenvire Suit",
+      "description": "null",
+      "category": "armor",
+      "subcategory": "suit",
+      "icon": "mcracksset02upper-et01.png",
+      "class": 35045,
+      "sex": "male",
+      "level": 180,
+      "rarity": "veryrare",
+      "minDefense": 2100,
+      "maxDefense": 2110,
+      "abilities": [
+        {
+          "add": 5,
+          "rate": true,
+          "parameter": "maxfp"
+        }
+      ],
+      "element": "none"
+    },
+    {
+      "id": 22483,
+      "consumable": false,
+      "durationRealTime": false,
+      "isActive": true,
+      "name": "Swimsuit 2026 Pink Hat (M)",
+      "description": "null",
+      "category": "fashion",
+      "subcategory": "hat",
+      "icon": "mclo2026swimsuithair-et01.png",
+      "sex": "male",
+      "level": 1,
+      "rarity": "common",
+      "element": "none"
+    },
+    {
+      "id": 33223,
+      "consumable": false,
+      "durationRealTime": false,
+      "isActive": true,
+      "name": "Attack Statted Ankou's Mask",
+      "description": "Obtained by completing all story quests from Eillun!",
+      "category": "fashion",
+      "subcategory": "mask",
+      "icon": "seasqueenmask01-et01.png",
+      "level": 1,
+      "rarity": "common",
+      "abilities": [
+        {
+          "add": 1,
+          "rate": true,
+          "parameter": "attack"
+        }
+      ],
+      "element": "none"
+    },
+    {
+      "id": 33355,
+      "consumable": false,
+      "durationRealTime": false,
+      "isActive": true,
+      "name": "Onmyoji 2026 Green Shoes (M)",
+      "description": "null",
+      "category": "fashion",
+      "subcategory": "shoes",
+      "icon": "mclo2025onmyojifoot-et01.png",
+      "sex": "male",
+      "level": 1,
+      "rarity": "common",
+      "abilities": [
+        {
+          "add": 4,
+          "rate": true,
+          "parameter": "speed"
+        }
+      ],
+      "element": "none"
+    },
+    {
+      "id": 34721,
+      "consumable": false,
+      "durationRealTime": false,
+      "isActive": true,
+      "name": "Lenvire Gauntlets",
+      "description": "null",
+      "category": "armor",
+      "subcategory": "gauntlet",
+      "icon": "mcracksset02hand-et01.png",
+      "class": 35045,
+      "sex": "male",
+      "level": 180,
+      "rarity": "veryrare",
+      "minDefense": 1310,
+      "maxDefense": 1315,
+      "element": "none"
+    },
+    {
+      "id": 37283,
+      "consumable": false,
+      "durationRealTime": false,
+      "isActive": true,
+      "name": "Lenvire Boots",
+      "description": "null",
+      "category": "armor",
+      "subcategory": "boots",
+      "icon": "mcracksset02foot-et01.png",
+      "class": 35045,
+      "sex": "male",
+      "level": 180,
+      "rarity": "veryrare",
+      "minDefense": 995,
+      "maxDefense": 1001,
+      "element": "none"
+    },
+    {
+      "id": 42906,
+      "consumable": false,
+      "durationRealTime": false,
+      "isActive": true,
+      "name": "Dragon's Rain",
+      "description": "An ancient weapon found deep within Ankou’s Asylum. It hums with the lingering power of the God of Death.",
+      "category": "weapon",
+      "subcategory": "bow",
+      "icon": "weabowbeheulti.png",
+      "class": 9098,
+      "level": 180,
+      "rarity": "ultimate",
+      "minAttack": 625,
+      "maxAttack": 627,
+      "ultimateConvertible": false,
+      "possibleRandomStats": [
+        {
+          "add": 3.5,
+          "rate": true,
+          "addMax": 13,
+          "parameter": "criticaldamage"
+        },
+        {
+          "add": 3.5,
+          "rate": true,
+          "addMax": 13,
+          "parameter": "blockpenetration"
+        },
+        {
+          "add": 3.5,
+          "rate": true,
+          "addMax": 9,
+          "parameter": "attack"
+        },
+        {
+          "add": 0.8,
+          "rate": true,
+          "addMax": 1.8,
+          "parameter": "stealhp"
+        },
+        {
+          "add": 4,
+          "rate": true,
+          "addMax": 9,
+          "parameter": "maxhp"
+        },
+        {
+          "add": 3,
+          "rate": false,
+          "addMax": 12,
+          "parameter": "sta"
+        },
+        {
+          "add": 3,
+          "rate": false,
+          "addMax": 12,
+          "parameter": "dex"
+        },
+        {
+          "add": 3,
+          "rate": true,
+          "addMax": 8,
+          "parameter": "block"
+        },
+        {
+          "add": 3,
+          "rate": true,
+          "addMax": 8,
+          "parameter": "pvpdamage"
+        },
+        {
+          "add": 3,
+          "rate": true,
+          "addMax": 8,
+          "parameter": "pvedamage"
+        }
+      ],
+      "twoHanded": true,
+      "abilities": [
+        {
+          "add": 68,
+          "rate": true,
+          "addMax": 85.8,
+          "parameter": "criticaldamage"
+        },
+        {
+          "add": 17,
+          "rate": true,
+          "addMax": 22,
+          "parameter": "attack"
+        },
+        {
+          "add": 2.2,
+          "rate": true,
+          "addMax": 2.9,
+          "parameter": "criticalchance"
+        },
+        {
+          "add": 5,
+          "rate": true,
+          "addMax": 15,
+          "parameter": "muranswrath"
+        }
+      ],
+      "element": "none",
+      "attackSpeedValue": 0.07,
+      "additionalSkillDamage": 0
+    },
+    {
+      "id": 43143,
+      "consumable": false,
+      "durationRealTime": false,
+      "isActive": true,
+      "name": "Swimsuit 2026 Pink Suit (M)",
+      "description": "null",
+      "category": "fashion",
+      "subcategory": "cloth",
+      "icon": "mclo2026swimsuitupper-et01.png",
+      "sex": "male",
+      "level": 1,
+      "rarity": "common",
+      "abilities": [
+        {
+          "add": 4,
+          "rate": true,
+          "parameter": "speed"
+        }
+      ],
+      "element": "none"
+    },
+    {
+      "id": 55330,
+      "consumable": false,
+      "durationRealTime": false,
+      "isActive": true,
+      "name": "Swimsuit 2026 Pink Hands (M)",
+      "description": "null",
+      "category": "fashion",
+      "subcategory": "glove",
+      "icon": "mclo2026swimsuithand-et01.png",
+      "sex": "male",
+      "level": 1,
+      "rarity": "common",
+      "element": "none"
+    },
+    {
+      "id": 576,
+      "consumable": false,
+      "durationRealTime": false,
+      "isActive": true,
+      "name": "Lightning Card (7%)",
+      "description": "+7% Attack (When placed in a pierced suit)",
+      "category": "material",
+      "subcategory": "piercingcard",
+      "icon": "genmatelepiercard_12_lighting.png",
+      "level": 1,
+      "rarity": "veryrare",
+      "abilities": [
+        {
+          "add": 7,
+          "rate": true,
+          "parameter": "attack"
+        }
+      ],
+      "element": "electricity"
+    }
+  ]
+}

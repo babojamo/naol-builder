@@ -272,7 +272,8 @@ export function skillLevelAbilities(skill:Skill,level:number):Ability[]{
 
 export function analyzeSelfBuffSkill(skill:Skill,data:Pick<GameData,'skill'>,level=maxSkillLevel(skill)):SelfBuffCoverage{
   const abilities=skillLevelAbilities(skill,level);
-  const supports=abilities.map(ability=>({ability,support:getWeaponParameterSupport(ability.parameter)}));
+  const barrage=skillFamilyRootId(skill,data)===24775;
+  const supports=abilities.map(ability=>({ability,support:barrage&&['pvemultistrike','pvpmultistrike'].includes(ability.parameter)?{...getWeaponParameterSupport(ability.parameter),status:'combat-supported' as const,appliedToCombat:true}:getWeaponParameterSupport(ability.parameter)}));
   const unknownParameters=[...new Set(supports.filter(row=>row.support.status==='unknown').map(row=>row.support.parameter))];
   const unsupportedParameters=[...new Set(supports.filter(row=>row.support.status==='recognized-unsupported'||row.support.trigger).map(row=>row.support.parameter))];
   const supportedAbilities=supports.filter(row=>row.support.appliedToSheet||row.support.appliedToCombat||row.support.conditional).length;
@@ -289,6 +290,7 @@ export function analyzeSelfBuffSkill(skill:Skill,data:Pick<GameData,'skill'>,lev
   // while active, elemental skills use the applied weapon element.
   const supportedSpecial=root===12579;
   const notes:string[]=[];
+  if(barrage)notes.push('Barrage is estimated as one equal-damage extra bow arrow per proc in sustained throughput; no recursive procs. Proc damage equivalence remains uncalibrated.');
   if(supportedSpecial)notes.push('Infusion weapon-element override is modeled by the combat engine.');
   if(unknownParameters.length)notes.push('Unknown ability parameters: '+unknownParameters.join(', ')+'.');
   if(unsupportedParameters.length)notes.push('Recognized but not calculated directly: '+unsupportedParameters.join(', ')+'.');
@@ -296,7 +298,7 @@ export function analyzeSelfBuffSkill(skill:Skill,data:Pick<GameData,'skill'>,lev
 
   let status:SelfBuffCoverageStatus;
   if(supportedAbilities===0&&!supportedSpecial)status='recognized-unsupported';
-  else if(unknownParameters.length||unsupportedParameters.length||specialMechanics.length)status='partial';
+  else if(barrage||unknownParameters.length||unsupportedParameters.length||specialMechanics.length)status='partial';
   else status='supported';
 
   return {
