@@ -1,8 +1,10 @@
 'use client';
 import type { ReactNode } from 'react';
+import NumericInput from './NumericInput';
+export {default as NumericInput} from './NumericInput';
 export const fmt=(n:number,d=0)=>Number.isFinite(n)?n.toLocaleString('en-US',{maximumFractionDigits:d}):'∞';
 export function Field({label,children,hint}:{label:string;children:ReactNode;hint?:string}){return <label className="field"><span>{label}</span>{children}{hint&&<small>{hint}</small>}</label>;}
-export function NumberField({label,value,onChange,min=0,max=10000,step=1,hint}:{label:string;value:number;onChange:(v:number)=>void;min?:number;max?:number;step?:number;hint?:string}){return <Field label={label} hint={hint}><input type="number" value={value} min={min} max={max} step={step} onChange={e=>{const v=Number(e.target.value);if(Number.isFinite(v))onChange(Math.min(max,Math.max(min,v)));}}/></Field>;}
+export function NumberField({label,value,onChange,min=0,max=10000,step='any',integer=false,hint}:{label:string;value:number;onChange:(v:number)=>void;min?:number;max?:number;step?:number|'any';integer?:boolean;hint?:string}){return <Field label={label} hint={hint}><NumericInput aria-label={label} value={value} min={min} max={max} step={step} integer={integer} onChange={onChange}/></Field>;}
 export function Range({label,value,onChange,min=0,max=10,step=1}:{label:string;value:number;onChange:(v:number)=>void;min?:number;max?:number;step?:number}){return <label className="range"><span>{label}<strong>{value}</strong></span><input type="range" aria-label={label} min={min} max={max} step={step} value={value} onChange={e=>onChange(Number(e.target.value))}/><div><small>{min}</small><small>{max}</small></div></label>;}
 export function Icon({kind,file,name=''}:{kind:'item'|'class'|'monster'|'skill';file?:string;name?:string}){return file?<img className={'game-icon '+kind} alt={name} loading="lazy" src={`https://api.flyff.com/image/${kind}/${kind==='class'?'target/':kind==='skill'?'colored/':''}${encodeURIComponent(file)}`} onError={e=>{e.currentTarget.style.visibility='hidden';}}/>:<span className="empty-icon">◇</span>;}
 export function Stat({label,value,unit='',highlight=false}:{label:string;value:number;unit?:string;highlight?:boolean}){return <div className={'metric '+(highlight?'highlight':'')}><span>{label}</span><strong>{fmt(value)}<small>{unit}</small></strong></div>;}
