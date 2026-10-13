@@ -1,4 +1,5 @@
 'use client';
+import {compareDisplayName,compareSkillName} from '../lib/catalog-sort';
 import {useId} from 'react';
 import {Info} from 'lucide-react';
 import {Field} from './Controls';
@@ -8,7 +9,7 @@ import type {CharacterBuild,GameData,Gear,Item,WeaponBonus} from '../lib/model';
 const help='Bonus Awakening is the special bonus found naturally on Weapons/Shields or rolled using Scroll of Weapon Bonus, Scroll of Shield Bonus, or Scroll of Bonus. Available skills and values depend on the item type, level and rarity.';
 const parameterNames:Record<string,string>={healing:'Healing',block:'Block',reflectdamage:'Reflect Damage',magicdefense:'Magic Defense',criticalresist:'Critical Resist',firedefense:'Fire Resistance',waterdefense:'Water Resistance',winddefense:'Wind Resistance',electricitydefense:'Electricity Resistance',earthdefense:'Earth Resistance',bleedandpoisonresist:'Bleed and Poison Resist'};
 export default function BonusAwakeningEditor({item,gear,character,gameData,onChange}:{item:Item;gear:Gear;character:CharacterBuild;gameData:GameData;onChange:(bonus:WeaponBonus|undefined)=>void}){
- const helpId=useId(),skills=skillAwakeOptions(item,gameData,character),parameters=parameterAwakeOptions(item,gameData);
+ const helpId=useId(),skills=[...skillAwakeOptions(item,gameData,character)].sort((a,b)=>compareSkillName(a,b,gameData)),parameters=[...parameterAwakeOptions(item,gameData)].sort((a,b)=>compareDisplayName(parameterNames[a.parameter]??a.parameter,parameterNames[b.parameter]??b.parameter));
  if(item.category!=='weapon'&&!(item.category==='armor'&&item.subcategory==='shield'))return null;
  const bonus=gear.weaponBonus??(gear.skillAwake?{type:'skill' as const,skillId:gear.skillAwake.skillId,value:gear.skillAwake.value}:undefined);
  const valid=!bonus||validWeaponBonus(item,gameData,character,bonus),empty=!skills.length&&!parameters.length;
@@ -33,7 +34,7 @@ export default function BonusAwakeningEditor({item,gear,character,gameData,onCha
    {bonus?.type==='parameter'&&<Field label="Parameter"><select value={bonus.parameter} onChange={e=>{const option=parameters.find(x=>x.parameter===e.target.value);if(option)choose({type:'parameter',parameter:option.parameter,value:option.values.includes(bonus.value)?bonus.value:option.values[0]});}}>
     {!parameters.some(x=>x.parameter===bonus.parameter)&&<option value={bonus.parameter} disabled>{parameterName(bonus.parameter)} · unavailable</option>}{parameters.map(x=><option key={x.parameter} value={x.parameter}>{parameterName(x.parameter)}</option>)}
    </select></Field>}
-   {bonus&&<Field label="Value"><select value={bonus.value} onChange={e=>choose({...bonus,value:Number(e.target.value)})}>{!values.includes(bonus.value)&&<option value={bonus.value} disabled>+{bonus.value}{unit} · unavailable</option>}{values.map(value=><option key={value} value={value}>+{value}{unit}</option>)}</select></Field>}
+   {bonus&&<Field label="Value"><select value={bonus.value} onChange={e=>choose({...bonus,value:Number(e.target.value)})}>{!values.includes(bonus.value)&&<option value={bonus.value} disabled>+{bonus.value}{unit} · unavailable</option>}{[...values].sort((a,b)=>a-b).map(value=><option key={value} value={value}>+{value}{unit}</option>)}</select></Field>}
   </>}
   <small>Also known as Weapon Bonus / Skill Awake. Selecting a result replaces the previous bonus; this simulator does not consume scrolls.</small>
  </section>;

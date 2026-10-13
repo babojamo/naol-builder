@@ -1,0 +1,11 @@
+import {lineage,type Item,type GameData,type CharacterBuild,type Ability} from './model';import {catalogItem} from './catalog-index';import {compareDisplayName} from './catalog-sort';
+const instantResources=new Set(['hp','mp','fp']);
+export function getActiveItemAbilities(item:Item):Ability[]{return (item.abilities??[]).filter(x=>!instantResources.has(x.parameter.toLowerCase())&&(Number.isFinite(x.add)||Number.isFinite(x.set)));}
+/** Explicit timed effects, plus audited API buff records whose duration is omitted. Never classify by name. */
+export function isActiveEffectItem(item:Item){return item.isActive!==false&&item.consumable===true&&getActiveItemAbilities(item).length>0&&(typeof item.duration==='number'&&item.duration>0||item.duration===undefined&&item.category==='buff');}
+export function canUseActiveItem(item:Item,build:CharacterBuild,data:GameData){return isActiveEffectItem(item)&&(item.level??1)<=build.level&&(!item.class||lineage(build.classId,data).includes(item.class))&&(!item.sex||item.sex===build.sex);}
+export function getActiveItemCatalog(data:GameData){return data.item.filter(isActiveEffectItem).sort((a,b)=>compareDisplayName(a.name,b.name)||a.id-b.id);}
+export function searchActiveItems(data:GameData,search:string){const query=search.trim().toLowerCase();return getActiveItemCatalog(data).filter(x=>x.name.toLowerCase().includes(query));}
+export function validateActiveItems(build:CharacterBuild,data:GameData){const errors:string[]=[],seen=new Set<number>();for(const {itemId} of build.activeItems??[]){const item=catalogItem(data,itemId);if(seen.has(itemId))errors.push('Active Item is selected more than once.');seen.add(itemId);if(!item)errors.push('Unknown Active Item #'+itemId+'.');else if(!canUseActiveItem(item,build,data))errors.push(item.name+' is not a valid active effect for this character.');}return [...new Set(errors)];}
+export function abilitySummary(abilities:Ability[]){return abilities.map(x=>`${x.parameter.toUpperCase()} ${x.set!==undefined?'= '+x.set:(x.add??0)>=0?'+'+(x.add??0):x.add}${x.rate?'%':''}${x.pvp===false?' (PvE)':x.pve===false?' (PvP)':''}`).join(' · ');}
+export function durationLabel(duration:number|undefined){return duration===undefined?'Not specified by API':duration>=86400?duration/86400+' days':duration>=3600?duration/3600+' hr':duration>=60?duration/60+' min':duration+' sec';}

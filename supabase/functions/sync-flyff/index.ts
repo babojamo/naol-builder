@@ -1,8 +1,9 @@
+import {normalizeFlyffRecord as normalize} from '../_shared/flyff-normalize.ts';
 import {admin,reply,user,body,cors} from '../_shared/runtime.ts';
 const resources=['class','item','monster','skill','equipset','upgradelevelbonus','statawake','skillawake','raisedpet','dungeon'];
 const idResources=new Set(['class','item','monster','skill','equipset']);
 const get=async(path:string)=>{await new Promise(r=>setTimeout(r,350));const response=await fetch('https://api.flyff.com/'+path,{signal:AbortSignal.timeout(25000)});if(!response.ok)throw Error('Flyff API returned '+response.status);return response.json();};
-function normalize(raw:Record<string,unknown>){const name=typeof raw.name==='object'?(raw.name as {en?:string})?.en:raw.name;const description=typeof raw.description==='object'?(raw.description as {en?:string})?.en:raw.description;const result={...raw,name:name??(raw.title as {en?:string})?.en??'',description:description??''};for(const key of ['spawns','drops','experienceTable','location','treePosition','masterVariations','title','transy'])delete result[key];if(Array.isArray(raw.levels))result.levels=raw.levels.map((l:Record<string,unknown>,index:number)=>({...l,level:l.level??index+1}));return result;}
+
 async function continueInBackground(generation:string){
  const response=await fetch(Deno.env.get('SUPABASE_URL')+'/functions/v1/sync-flyff',{method:'POST',headers:{'Content-Type':'application/json','x-naol-sync-key':Deno.env.get('SYNC_KEY')!},body:JSON.stringify({generation})});if(!response.ok)throw Error('Sync continuation failed');
 }

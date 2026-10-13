@@ -1,3 +1,4 @@
+import {canUseActiveItem,getActiveItemAbilities} from './active-items';
 import {canUseSkillWithEquipment} from './skill-weapons';
 import {getRaisedPetBonus} from './raised-pets';
 import {catalogItem,catalogSkill} from './catalog-index';
@@ -10,7 +11,7 @@ import {resolveCanonicalParameter} from './stat-parameters';
 import {getAdditionalStatAbilities,canReceiveAdditionalStat,validateAdditionalStat} from './additional-stat';
 import {slots,type Ability,type CharacterBuild,type GameData,type Slot} from './model';
 
-export type ModifierSourceType='base'|'allocated'|'item'|'normal-upgrade'|'set'|'set-upgrade'|'accessory'|'accessory-upgrade'|'ultimate-accessory'|'ultimate-weapon'|'ultimate-jewel'|'ultimate-rune'|'stat-awakening'|'weapon-bonus'|'piercing'|'fashion-blessing'|'pet'|'skill'|'buff'|'manual'|'other';
+export type ModifierSourceType='base'|'allocated'|'item'|'normal-upgrade'|'set'|'set-upgrade'|'accessory'|'accessory-upgrade'|'ultimate-accessory'|'ultimate-weapon'|'ultimate-jewel'|'ultimate-rune'|'stat-awakening'|'weapon-bonus'|'piercing'|'fashion-blessing'|'active-item'|'pet'|'skill'|'buff'|'manual'|'other';
 export type ModifierConfidence='verified'|'estimated'|'unsupported';
 export interface StatModifier{parameter:string;rawParameter:string;value:number;operation:'flat'|'rate'|'set';sourceType:ModifierSourceType;sourceId?:string|number;sourceName?:string;slot?:Slot;confidence:ModifierConfidence;pvp?:boolean;pve?:boolean;rawAbility?:Ability;}
 
@@ -20,6 +21,7 @@ export function collectCharacterModifiers(build:CharacterBuild,data:GameData):St
  const out:StatModifier[]=[];
  for(const key of ['str','sta','dex','int'] as const){out.push({parameter:key,rawParameter:key,value:15,operation:'flat',sourceType:'base',sourceName:'Character base',confidence:'verified'},{parameter:key,rawParameter:key,value:build.baseStats[key]-15,operation:'flat',sourceType:'allocated',sourceName:'Allocated points',confidence:'verified'});}
  out.push(...build.bonuses.map(a=>modifier(a,'manual',{sourceName:'Manual override'},'estimated')));
+ for(const itemId of new Set((build.activeItems??[]).map(x=>x.itemId))){const item=catalogItem(data,itemId);if(item&&canUseActiveItem(item,build,data))out.push(...getActiveItemAbilities(item).map(a=>modifier(a,'active-item',{sourceId:item.id,sourceName:item.name})));}
  const ids:number[]=[],usedRunes=new Set<number>();
  for(const slot of slots){const gear=build.equipment[slot];if(!gear)continue;const item=catalogItem(data,gear.itemId);if(!item||(!build.theoretical&&(!canEquipItem(build,item,data,slot)||isAccessory(item)&&!canEquipAccessory(build.level,item,getConfiguredUpgrade(item,gear)))))continue;ids.push(item.id);const itemMeta={slot,sourceId:item.id,sourceName:item.name};
   const baseAbilities=isAccessory(item)?getAccessoryAbilities(item,getConfiguredUpgrade(item,gear)):item.abilities??[];

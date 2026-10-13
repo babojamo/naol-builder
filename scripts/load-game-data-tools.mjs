@@ -1,0 +1,2 @@
+import {build} from 'esbuild';
+export async function loadGameDataTools(){const result=await build({stdin:{contents:'export * from "./lib/active-items.ts";export * from "./lib/catalog-items.ts";export * from "./lib/ringmaster-buffs.ts";export * from "./supabase/functions/_shared/flyff-normalize.ts";',resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false});return import('data:text/javascript;base64,'+Buffer.from(result.outputFiles[0].text).toString('base64'));}
