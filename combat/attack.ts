@@ -5,8 +5,12 @@ import {catalogItem,catalogSkill} from '../lib/catalog-index';
 import {isWeaponCompatibleWithSkills,getWeaponAttackUpgrade} from '../lib/item-rules';
 import {abilities,percent,clamp,derive,type Derived} from './character';
 import {mainHandSkillBonus} from '../lib/skill-awake';
-import {resolveWeaponEffects} from '../lib/weapon-effects';
-import {getAbilityTotal,getFlatAbility,getRateAbility} from '../lib/stat-parameters';
+import {
+  getWeaponConditionalRate,
+  getWeaponEffectInspectorRows,
+  resolveWeaponEffects,
+} from '../lib/weapon-effects';
+import {getFlatAbility,getRateAbility} from '../lib/stat-parameters';
 import {postDefenseDamage} from './formulas/attack-defense';
 import {contextHitChance} from './formulas/hit';
 import {criticalMultiplierRange,effectiveCriticalChance} from './formulas/critical';
@@ -29,9 +33,20 @@ export function opponentTarget(b:CharacterBuild,d:GameData):Target{if(!b.opponen
 export function calculate(b:CharacterBuild,d:GameData,override?:Target){
  const s=derive(b,d),a=abilities(b,d),t=override??(b.mode==='pvp'?opponentTarget(b,d):d.monster.find(x=>x.id===b.targetId)??d.monster[0]),pvp=b.mode==='pvp',targetLevel=t.level===-1?b.level:t.level;
  const targetHealthPercent=clamp(b.targetHealthPercent??100,0,100);
- const conditionalPercent=(parameter:string)=>{const result=getAbilityTotal(a,parameter);return result.set??result.flat+result.rate;};
- const muransWrathRate=conditionalPercent('muranswrath'),ankousHarvestRate=conditionalPercent('ankousharvest'),healthConditional={targetHealthPercent,muransWrathRate,ankousHarvestRate,pvp};
- const weaponEffects=[...resolveWeaponEffects(b,d,'rightHand'),...resolveWeaponEffects(b,d,'leftHand')];
+ const weaponEffects=[
+  ...resolveWeaponEffects(b,d,'rightHand'),
+  ...resolveWeaponEffects(b,d,'leftHand'),
+ ];
+ const weaponInspector=[
+  ...getWeaponEffectInspectorRows(b,d,'rightHand'),
+  ...getWeaponEffectInspectorRows(b,d,'leftHand'),
+ ];
+ // Reference-backed hand policy: Flyffulator's Entity.getStat() aggregates
+ // equipped item abilities across both weapon slots, so Muran/Ankou values
+ // from right + left weapons stack until stronger game evidence says otherwise.
+ const muransWrathRate=getWeaponConditionalRate(b,d,'muranswrath');
+ const ankousHarvestRate=getWeaponConditionalRate(b,d,'ankousharvest');
+ const healthConditional={targetHealthPercent,muransWrathRate,ankousHarvestRate,pvp};
  const chosen=b.skills.find(x=>!catalogSkill(d,x.id)?.passive),skill=b.attackType==='skill'?catalogSkill(d,chosen?.id):undefined,sl=skill?.levels.find(x=>x.level===chosen?.level),skillUsable=!skill||!!sl&&(!skill.class||lineage(b.classId,d).includes(skill.class))&&skill.level<=b.level&&isWeaponCompatibleWithSkills(s.weapon,[skill],buildSkillWeaponContext(b,d)),wand=!skill&&s.weapon?.subcategory==='wand',magical=!!skill?.magic||wand;
  const targetAbilities=b.opponentBuild?abilities(b.opponentBuild,d):[];
  let defense=skill?.magic?Math.max(0,t.magicDefense??0):effectiveMonsterDefense(magical?t.magicDefense??t.defense:t.defense,!!skill||wand);
@@ -85,6 +100,6 @@ export function calculate(b:CharacterBuild,d:GameData,override?:Target){
  const sustainedExpected=expectedDamage(sustainedNormal,sustainedCritical,hit,crit,block,blockedMultiplier);
  const interval=skill?Math.max(.25,Number(pvp?sl?.cooldownPVP??sl?.cooldown??0:sl?.cooldown??0),Number(sl?.casting??0)*(1-clamp(percent(0,'decreasedcastingtime',a),0,90)/100)):1/s.internalAttackSpeed,sustained=sustainedExpected/interval,dpsFor=(duration:number)=>Math.floor(duration/interval)*sustainedExpected/duration;
  const damageStageDebug=finalizeDamage(rightNormalMin,modeRate,incoming,bossRate,reduction,healthConditional);
- return {openingExpected:expected,sustainedExpected,weaponEffects,skillUsable,skillStatus:skillUsable?'usable':'unusable',stats:s,target:t,effectiveElement,rightNormalMin,rightNormalMax,leftNormalMin,leftNormalMax,leftFraction:0,cycle,cycleRanges,normalMin,normalMax,normal,criticalMin,criticalMax,critical,criticalRange,connected,expected,hit,miss:1-hit,crit,rawCriticalChance:s.crit/100,block,effectiveMeleeBlock:skill||wand?0:effectiveBlock({...blockContext,rangedAttack:false}).probability,effectiveRangedBlock:skill||wand?0:effectiveBlock({...blockContext,rangedAttack:true}).probability,blockedMultiplier,element:el,modifier,defense,interval,dps:sustained,burst:dpsFor(5),dpsFor,ttk:sustained>0?t.hp/sustained:Infinity,notes,calculationStages:{targetHealthPercent,muranWrathRaw:muransWrathRate,muranWrathEffective:damageStageDebug.muransWrathRate,ankousHarvestRaw:ankousHarvestRate,ankousHarvestEffective:damageStageDebug.ankousHarvestRate,afterHealthConditional:damageStageDebug.afterHealthConditional,weaponElement,weaponElementUpgrade:g?.element!=='none'?g?.elementUpgrade??0:0,elementAttack:getFlatAbility(a,'elementattack'),elementRelation:skill?elementFactors(effectiveElement,weaponElement,0,0,d.upgradelevelbonus).relation:rightMin.elementRelation,elementCoefficient:el,suitElement:b.opponentBuild?.equipment.suit?.element??'none',suitElementUpgrade:b.opponentBuild?.equipment.suit?.elementUpgrade??0,suitDefenseApplied:!skill&&!wand?'auto relationship':'not applied by skill reference',elementDefenseCoefficient:!skill&&!wand?rightMin.elementDefenseCoefficient:1,targetResistance:rightMin.resistance,resistanceMultiplier:rightMin.resistanceMultiplier,afterResistance:rightMin.afterResistance,weaponSkillMatchCoefficient:rightMin.weaponSkillMatchCoefficient,weaponMin:weaponRange.min,weaponMax:weaponRange.max,basePowerMin:main.min,basePowerMax:main.max,attackRate,skillRate,thirdJobRate,combinedAttackRate:rightMin.combinedRate,ratedAttackMin:rightMin.rated,flatAttack:rightMin.flatAttack,pveFlat:rightMin.pveFlat,attackBeforeDefense:rightMin.attack,magicDefenseRate,incomingMagicAttack:rightMin.incomingMagic,defense,effectiveDefenseMin:rightMin.effectiveDefense,postDefenseMin:rightMin.postDefense,postDefenseMax:rightMax.postDefense,meleeElement:rightMin.meleeElement,afterElement:rightMin.afterElement,levelMultiplier,mode,modeRate,skillFactor,damageBonus,element:el,autoElementPower:rightMin.preElement,offhand:leftFactor,incomingRate:incoming,bossRate,reductionRate:reduction,handFactor,afterMode:damageStageDebug.afterMode,afterIncoming:damageStageDebug.afterIncoming,afterBoss:damageStageDebug.afterBoss,finalExpected:expected},probabilities:{miss:1-hit,normal:hit*(1-crit)*(1-block),critical:hit*crit*(1-block),blocked:hit*(1-crit)*block,blockedCritical:hit*crit*block}};
+ return {openingExpected:expected,sustainedExpected,weaponEffects,weaponInspector,skillUsable,skillStatus:skillUsable?'usable':'unusable',stats:s,target:t,effectiveElement,rightNormalMin,rightNormalMax,leftNormalMin,leftNormalMax,leftFraction:0,cycle,cycleRanges,normalMin,normalMax,normal,criticalMin,criticalMax,critical,criticalRange,connected,expected,hit,miss:1-hit,crit,rawCriticalChance:s.crit/100,block,effectiveMeleeBlock:skill||wand?0:effectiveBlock({...blockContext,rangedAttack:false}).probability,effectiveRangedBlock:skill||wand?0:effectiveBlock({...blockContext,rangedAttack:true}).probability,blockedMultiplier,element:el,modifier,defense,interval,dps:sustained,burst:dpsFor(5),dpsFor,ttk:sustained>0?t.hp/sustained:Infinity,notes,calculationStages:{targetHealthPercent,muranWrathRaw:muransWrathRate,muranWrathEffective:damageStageDebug.muransWrathRate,ankousHarvestRaw:ankousHarvestRate,ankousHarvestEffective:damageStageDebug.ankousHarvestRate,afterHealthConditional:damageStageDebug.afterHealthConditional,weaponElement,weaponElementUpgrade:g?.element!=='none'?g?.elementUpgrade??0:0,elementAttack:getFlatAbility(a,'elementattack'),elementRelation:skill?elementFactors(effectiveElement,weaponElement,0,0,d.upgradelevelbonus).relation:rightMin.elementRelation,elementCoefficient:el,suitElement:b.opponentBuild?.equipment.suit?.element??'none',suitElementUpgrade:b.opponentBuild?.equipment.suit?.elementUpgrade??0,suitDefenseApplied:!skill&&!wand?'auto relationship':'not applied by skill reference',elementDefenseCoefficient:!skill&&!wand?rightMin.elementDefenseCoefficient:1,targetResistance:rightMin.resistance,resistanceMultiplier:rightMin.resistanceMultiplier,afterResistance:rightMin.afterResistance,weaponSkillMatchCoefficient:rightMin.weaponSkillMatchCoefficient,weaponMin:weaponRange.min,weaponMax:weaponRange.max,basePowerMin:main.min,basePowerMax:main.max,attackRate,skillRate,thirdJobRate,combinedAttackRate:rightMin.combinedRate,ratedAttackMin:rightMin.rated,flatAttack:rightMin.flatAttack,pveFlat:rightMin.pveFlat,attackBeforeDefense:rightMin.attack,magicDefenseRate,incomingMagicAttack:rightMin.incomingMagic,defense,effectiveDefenseMin:rightMin.effectiveDefense,postDefenseMin:rightMin.postDefense,postDefenseMax:rightMax.postDefense,meleeElement:rightMin.meleeElement,afterElement:rightMin.afterElement,levelMultiplier,mode,modeRate,skillFactor,damageBonus,element:el,autoElementPower:rightMin.preElement,offhand:leftFactor,incomingRate:incoming,bossRate,reductionRate:reduction,handFactor,afterMode:damageStageDebug.afterMode,afterIncoming:damageStageDebug.afterIncoming,afterBoss:damageStageDebug.afterBoss,finalExpected:expected},probabilities:{miss:1-hit,normal:hit*(1-crit)*(1-block),critical:hit*crit*(1-block),blocked:hit*(1-crit)*block,blockedCritical:hit*crit*block}};
 }
 export type Combat=ReturnType<typeof calculate>;
