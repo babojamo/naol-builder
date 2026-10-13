@@ -28,3 +28,6 @@
 .bonus-awakening-help{position:relative}.bonus-awakening-help button{display:flex;padding:6px}.bonus-awakening-help [role=tooltip]{display:none;position:absolute;right:0;top:100%;width:min(320px,70vw);padding:14px;border:1px solid #52616e;border-radius:8px;background:#17212b;color:#e4ecf3;font-size:13px;line-height:1.5;z-index:20;box-shadow:0 8px 24px #0008}
 .bonus-awakening-help:hover [role=tooltip],.bonus-awakening-help:focus-within [role=tooltip]{display:block}
 .bonus-awakening-editor>small{display:block;margin-top:14px;color:#a7bbce;font-size:12px;line-height:1.6}
+.weapon-variant-badges{display:flex;flex-wrap:wrap;gap:6px;margin:5px 0}
+.weapon-rarity-badge,.weapon-conversion-badge{display:inline-block;font-size:9px;line-height:1.4;padding:3px 6px;border:1px solid #d8bb7544;border-radius:4px;color:#d8bb75;letter-spacing:.04em}
+.weapon-rarity-badge.ultimate{background:#cb78ef16;border-color:#cb78ef66;color:#df9cff}.weapon-conversion-badge{color:#a7bbce;border-color:#a7bbce44}

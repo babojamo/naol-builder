@@ -1,0 +1,2 @@
+import type {Item} from '../lib/model';
+export default function WeaponVariantBadges({item}:{item:Item}){if(item.category!=='weapon')return null;return <span className="weapon-variant-badges"><span className={'weapon-rarity-badge '+(item.rarity==='ultimate'?'ultimate':'')} aria-label={'Weapon rarity: '+item.rarity}>{item.rarity.toUpperCase()}</span>{item.ultimateConvertible&&item.rarity!=='ultimate'&&<span className="weapon-conversion-badge">Convertible to Ultimate</span>}</span>;}
