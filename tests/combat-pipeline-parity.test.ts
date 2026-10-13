@@ -49,7 +49,7 @@ test('magic PvE: Infusion resolves water resistance and mastery before damage st
  const original=calculate({...b,buffs:[]},d);assert.equal(original.effectiveElement,'fire');close(original.element,.27);assert.ok(original.expected<r.expected);
 });
 test('magic PvP: magicdefense rate reduces incoming attack, def rate scales class defense',()=>{
- const {b,d}=skillFixture(true),other=fixture().b;b.mode='pvp';b.opponentBuild={...other,equipment:{},bonuses:[{parameter:'magicdefense',add:5},{parameter:'magicdefense',add:20,rate:true},{parameter:'def',add:10,rate:true},{parameter:'pvpdamagereduction',add:15,rate:true}]};b.opponent={...target,rank:'player',level:100};const r=calculate(b,d);
+ const {b,d}=skillFixture(true),other=fixture().b;b.mode='pvp';b.opponentBuild={...other,equipment:{},bonuses:[{parameter:'waterdefense',add:20,rate:true},{parameter:'magicdefense',add:5},{parameter:'magicdefense',add:20,rate:true},{parameter:'def',add:10,rate:true},{parameter:'pvpdamagereduction',add:15,rate:true}]};b.opponent={...target,rank:'player',level:100};const r=calculate(b,d);
  assert.equal(r.defense,186);assert.equal(r.calculationStages.magicDefenseRate,20);close(r.calculationStages.incomingMagicAttack,567.2);close(r.calculationStages.postDefenseMin,238.2);assert.equal(r.calculationStages.afterElement,209);assert.equal(r.expected,146);
 });
 test('inherited master formula index and parent Weapon Bonus survive full magic pipeline',()=>{

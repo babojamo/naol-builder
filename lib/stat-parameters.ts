@@ -9,7 +9,7 @@ export const StatParameter={
  defense:'def',magicDefense:'magicdefense',parry:'parry',block:'block',meleeBlock:'meleeblock',rangedBlock:'rangedblock',pvpBlock:'pvpblock',
  pveDamage:'pvedamage',pvpDamage:'pvpdamage',bossDamage:'bossmonsterdamage',pveDamageReduction:'pvedamagereduction',pvpDamageReduction:'pvpdamagereduction',
  incomingDamage:'incomingdamage',incomingHealing:'incominghealing',hpRestoration:'hprestoration',hpRecovery:'hprecovery',skillDamage:'skilldamage',
- blockPenetration:'blockpenetration',pvpBlockPenetration:'pvpblockpenetration',allElementsDefense:'allelementsdefense',
+ blockPenetration:'blockpenetration',pvpBlockPenetration:'pvpblockpenetration',allElementsDefense:'allelementsdefense',elementAttack:'elementattack',allElementsMastery:'allelementsmastery',
 } as const;
 
 export type CanonicalStatParameter=typeof StatParameter[keyof typeof StatParameter];

@@ -1,0 +1,7 @@
+{
+  "kind": "character-details-schema-reference",
+  "source": "User-supplied Character Details screenshots and elemental audit brief",
+  "fields": ["attack", "elementAttack", "fireMastery", "waterMastery", "windMastery", "electricityMastery", "earthMastery", "fireResistance", "waterResistance", "windResistance", "electricityResistance", "earthResistance"],
+  "observedStats": {},
+  "notes": "Schema only: no complete matching elemental build or numeric elemental calibration capture was supplied with this brief. Populate observedStats from a labeled matching capture; never use screenshot totals as formula constants."
+}
