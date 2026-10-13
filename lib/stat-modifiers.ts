@@ -1,3 +1,5 @@
+import {activeSelfBuffSelections} from './skill-usage';
+import {getWeaponParameterSupport} from './weapon-effects';
 import {getConfiguredItemAbilities,getItemAbilityRange} from './item-stat-ranges';
 import {canUseActiveItem,getActiveItemAbilities} from './active-items';
 import {canUseSkillWithEquipment} from './skill-weapons';
@@ -12,7 +14,7 @@ import {resolveCanonicalParameter} from './stat-parameters';
 import {getAdditionalStatAbilities,canReceiveAdditionalStat,validateAdditionalStat} from './additional-stat';
 import {slots,type Ability,type CharacterBuild,type GameData,type Slot} from './model';
 
-export type ModifierSourceType='base'|'allocated'|'item'|'item-base-roll'|'normal-upgrade'|'set'|'set-upgrade'|'accessory'|'accessory-upgrade'|'ultimate-accessory'|'ultimate-weapon'|'ultimate-jewel'|'ultimate-rune'|'stat-awakening'|'weapon-bonus'|'piercing'|'fashion-blessing'|'active-item'|'pet'|'skill'|'buff'|'manual'|'other';
+export type ModifierSourceType='base'|'allocated'|'item'|'item-base-roll'|'normal-upgrade'|'set'|'set-upgrade'|'accessory'|'accessory-upgrade'|'ultimate-accessory'|'ultimate-weapon'|'ultimate-jewel'|'ultimate-rune'|'stat-awakening'|'weapon-bonus'|'piercing'|'fashion-blessing'|'active-item'|'pet'|'skill'|'self-buff'|'buff'|'manual'|'other';
 export type ModifierConfidence='verified'|'estimated'|'unsupported';
 export interface StatModifier{parameter:string;rawParameter:string;value:number;operation:'flat'|'rate'|'set';sourceType:ModifierSourceType;sourceId?:string|number;sourceName?:string;slot?:Slot;confidence:ModifierConfidence;pvp?:boolean;pve?:boolean;rawAbility?:Ability;}
 
@@ -41,8 +43,59 @@ export function collectCharacterModifiers(build:CharacterBuild,data:GameData):St
  out.push(...calculateEquipmentSetBonuses(ids,data.equipset).map(a=>modifier(a,'set',{sourceName:'Equipment set'})));
  const effective=getEffectiveSetUpgradeLevel(build,data),setUpgrade=data.upgradelevelbonus.find(x=>x.upgradeLevel===effective);
  out.push(...(setUpgrade?.setAbilities??[]).map(a=>modifier(a,'set-upgrade',{sourceId:effective,sourceName:`Armor set +${effective}`})));
- const selfSkills=[...build.buffs.map(x=>({...x,sourceType:'buff' as const})),...build.support.buffSkills.filter(x=>catalogSkill(data,x.id)?.target==='currentplayer').map(x=>({...x,sourceType:'buff' as const})),...build.skills.filter(x=>catalogSkill(data,x.id)?.passive).map(x=>({...x,sourceType:'skill' as const}))];
- for(const selected of selfSkills){const skill=catalogSkill(data,selected.id);if(skill&&(selected.sourceType==='buff'&&build.buffs.some(x=>x.id===selected.id)||canUseSkillWithEquipment(skill,build,data)))out.push(...[...(skill.abilities??[]),...(skill.levels.find(x=>x.level===selected.level)?.abilities??[])].map(a=>modifier(a,selected.sourceType,{sourceId:skill.id,sourceName:skill.name})));}
+ const selfBuffs=activeSelfBuffSelections(build,data);
+const activeSelfIds=new Set(selfBuffs.map(row=>row.id));
+
+const selfSkills=[
+  // Preserve legacy/imported external buffs, but never count the same skill
+  // twice when it has been migrated to explicit selfBuffs[].
+  ...build.buffs
+    .filter(row=>!activeSelfIds.has(row.id))
+    .map(row=>({...row,sourceType:'buff' as const})),
+  ...build.support.buffSkills
+    .filter(row=>catalogSkill(data,row.id)?.target==='currentplayer')
+    .map(row=>({...row,sourceType:'buff' as const})),
+  ...selfBuffs.map(row=>({...row,sourceType:'self-buff' as const})),
+  ...build.skills
+    .filter(row=>catalogSkill(data,row.id)?.passive)
+    .map(row=>({...row,sourceType:'skill' as const})),
+];
+
+for(const selected of selfSkills){
+  const skill=catalogSkill(data,selected.id);
+  if(!skill)continue;
+
+  const externalLegacy=selected.sourceType==='buff'&&build.buffs.some(row=>row.id===selected.id);
+  if(!externalLegacy&&!canUseSkillWithEquipment(skill,build,data))continue;
+
+  const abilities=[
+    ...(skill.abilities??[]),
+    ...(skill.levels.find(row=>row.level===selected.level)?.abilities??[]),
+  ];
+
+  for(const ability of abilities){
+    let confidence:'verified'|'unsupported'='verified';
+
+    if(selected.sourceType==='self-buff'){
+      const support=getWeaponParameterSupport(ability.parameter);
+      // Reuse the current explicit stat/combat consumer registry. A trigger,
+      // unknown parameter or recognized-but-unimplemented mechanic must not
+      // silently become a normal stat modifier.
+      if(
+        support.status==='unknown'
+        ||support.status==='recognized-unsupported'
+        ||support.trigger
+      )confidence='unsupported';
+    }
+
+    out.push(modifier(
+      ability,
+      selected.sourceType,
+      {sourceId:skill.id,sourceName:skill.name},
+      confidence,
+    ));
+  }
+}
  if(build.pet){const pet=data.raisedpet.find(x=>x.petItemId===build.pet!.id);const bonus=getRaisedPetBonus(build.pet,pet);if(!bonus.errors.length)out.push(modifier({parameter:bonus.parameter,rate:bonus.rate,add:bonus.total},'pet',{sourceId:pet!.petItemId,sourceName:'Raised Pet — '+(data.item.find(x=>x.id===pet!.petItemId)?.name??'#'+pet!.petItemId)}));}
  return out.filter(m=>build.mode==='pvp'?m.pvp!==false:m.pve!==false);
 }

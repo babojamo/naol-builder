@@ -1,4 +1,5 @@
 'use client';
+import SelfBuffHealth from './SelfBuffHealth';
 
 import {useCallback,useEffect,useRef,useState} from 'react';
 import {useAuth} from './AuthProvider';
@@ -9,6 +10,7 @@ import SkillWeaponHealth from './SkillWeaponHealth';
 type RequirementAudit=ReturnType<typeof import('../lib/skill-weapons').auditSkillWeaponRequirements>;
 type WeaponAudit=ReturnType<typeof import('../lib/weapon-effects').auditWeaponEffects>;
 type SyncState={
+self_buff_diagnostics?:ReturnType<typeof import('../lib/skill-usage').auditSelfBuffSkills>;
   weapon_effect_diagnostics?:WeaponAudit;
   fashion_blessing_diagnostics?:ReturnType<typeof import('../lib/fashion').auditFashionBlessingRules>;
   skill_weapon_requirements?:RequirementAudit;
@@ -57,7 +59,7 @@ export default function DataHealth(){
       <p className="muted">Conditional hand policy: {weapon.conditionalHandPolicy.mode} · {weapon.conditionalHandPolicy.confidence}. Waterbomb and other recognized-but-unverified procs remain excluded from primary-target DPS.</p>
     </section>}
 
-    {state?.fashion_blessing_diagnostics&&<FashionBlessingHealth audit={state.fashion_blessing_diagnostics}/>} {state?.skill_weapon_requirements&&<SkillWeaponHealth rows={state.skill_weapon_requirements}/>} {state?.error&&<p className="notice">{state.error}</p>}
+    {state?.self_buff_diagnostics&&<SelfBuffHealth audit={state.self_buff_diagnostics}/>}{state?.fashion_blessing_diagnostics&&<FashionBlessingHealth audit={state.fashion_blessing_diagnostics}/>} {state?.skill_weapon_requirements&&<SkillWeaponHealth rows={state.skill_weapon_requirements}/>} {state?.error&&<p className="notice">{state.error}</p>}
     <button className="secondary" disabled={busy||!auth.user} onClick={async()=>{setBusy(true);try{const r=await authenticatedFetch('/api/sync',{method:'POST'});const body=await r.json() as {error?:string;message?:string};if(!r.ok)throw Error(body.error??'Flyff synchronization unavailable.');setMessage(body.message??'Version check requested.');lastRefresh.current=0;await refresh(true);}catch(e){setMessage((e as Error).message);}finally{setBusy(false);}}}>{busy?'Checking…':'Check for Data Update'}</button>
     <p className="muted">Hourly version checks trigger a full refresh only when the official version changes. Failed syncs retain the previous dataset. Sign in to request a manual check. Status refreshes when opened and at most once per minute on return.</p>{message&&<p role="status">{message}</p>}
   </section>;

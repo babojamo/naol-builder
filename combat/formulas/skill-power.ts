@@ -1,3 +1,4 @@
+import {getConfiguredSkillLevel,hasActiveSkillFamily} from '../../lib/skill-usage';
 import {catalogItem,catalogSkill} from '../../lib/catalog-index';
 import type {Ability,CharacterBuild,GameData,Skill,SkillLevel,Stats} from '../../lib/model';
 import {getFlatAbility,getRateAbility} from '../../lib/stat-parameters';
@@ -12,8 +13,8 @@ export function calculateSkillPower(input:{weapon:{min:number;max:number};additi
  const power=(weapon:number,base:number)=>(weapon+(base+input.additionalSkillDamage)*5+stat-20)*(16+index)/13+flat;
  let min=power(input.weapon.min,level.minAttack??0),max=power(input.weapon.max,level.maxAttack??0);
  const synergies=(level.synergies??[]) as {parameter:string;skill:number;minLevel:number;add:boolean;scale:number;pvp?:boolean;pve?:boolean}[];
- for(const x of synergies){if(x.parameter!=='attack'||(build.mode==='pvp'?x.pvp===false:x.pve===false))continue;const selected=build.skills.find(s=>s.id===x.skill);if(selected&&selected.level>x.minLevel){const amount=(selected.level-x.minLevel)*x.scale/100;if(x.add){min+=amount;max+=amount;}else{min*=1+amount;max*=1+amount;}}}
+ for(const x of synergies){if(x.parameter!=='attack'||(build.mode==='pvp'?x.pvp===false:x.pve===false))continue;const selectedLevel=getConfiguredSkillLevel(x.skill,build,input.data);if(selectedLevel!==null&&selectedLevel>x.minLevel){const amount=(selectedLevel-x.minLevel)*x.scale/100;if(x.add){min+=amount;max+=amount;}else{min*=1+amount;max*=1+amount;}}}
  min=Math.floor(min);max=Math.floor(max);
- if(skill.magic){const magic=getRateAbility(input.abilities,'magicattack');let type=String(skill.elementType??skill.element??'none');if(type!=='none'&&(build.buffs.some(x=>x.id===12579)||build.support.buffSkills.some(x=>x.id===12579))){const weapon=build.equipment.rightHand;if(weapon&&weapon.element!=='none')type=weapon.element;}const mastery=['fire','water','wind','electricity','earth'].filter(x=>type.includes(x)).reduce((n,x)=>n+getRateAbility(input.abilities,x+'mastery'),0);min+=Math.floor(min*magic/100);max+=Math.floor(max*magic/100);min=Math.floor(min*(1+mastery/100));max=Math.floor(max*(1+mastery/100));}
+ if(skill.magic){const magic=getRateAbility(input.abilities,'magicattack');let type=String(skill.elementType??skill.element??'none');if(type!=='none'&&hasActiveSkillFamily(build,input.data,12579)){const weapon=build.equipment.rightHand;if(weapon&&weapon.element!=='none')type=weapon.element;}const mastery=['fire','water','wind','electricity','earth'].filter(x=>type.includes(x)).reduce((n,x)=>n+getRateAbility(input.abilities,x+'mastery'),0);min+=Math.floor(min*magic/100);max+=Math.floor(max*magic/100);min=Math.floor(min*(1+mastery/100));max=Math.floor(max*(1+mastery/100));}
  return {min,max,average:(min+max)/2,notes:active.some(x=>!x.add)?['Multiplicative skill-stat scaling is unsupported.']:[]};
 }

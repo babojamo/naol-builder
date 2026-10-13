@@ -1,3 +1,7 @@
+import {
+  getSimulationSkillSelection,
+  hasActiveSkillFamily,
+} from '../lib/skill-usage';
 import {buildSkillWeaponContext,resolveSkillWeaponRequirement} from '../lib/skill-weapons';
 import {lineage} from '../lib/model';
 import {resolveWeaponElement} from '../lib/element-stats';
@@ -47,11 +51,15 @@ export function calculate(b:CharacterBuild,d:GameData,override?:Target){
  const muransWrathRate=getWeaponConditionalRate(b,d,'muranswrath');
  const ankousHarvestRate=getWeaponConditionalRate(b,d,'ankousharvest');
  const healthConditional={targetHealthPercent,muransWrathRate,ankousHarvestRate,pvp};
- const chosen=b.skills.find(x=>!catalogSkill(d,x.id)?.passive),skill=b.attackType==='skill'?catalogSkill(d,chosen?.id):undefined,sl=skill?.levels.find(x=>x.level===chosen?.level),skillUsable=!skill||!!sl&&(!skill.class||lineage(b.classId,d).includes(skill.class))&&skill.level<=b.level&&isWeaponCompatibleWithSkills(s.weapon,[skill],buildSkillWeaponContext(b,d)),wand=!skill&&s.weapon?.subcategory==='wand',magical=!!skill?.magic||wand;
+ const chosen=getSimulationSkillSelection(b,d)??undefined,skill=b.attackType==='skill'?catalogSkill(d,chosen?.id):undefined,sl=skill?.levels.find(x=>x.level===chosen?.level),skillUsable=!skill||!!sl&&(!skill.class||lineage(b.classId,d).includes(skill.class))&&skill.level<=b.level&&isWeaponCompatibleWithSkills(s.weapon,[skill],buildSkillWeaponContext(b,d)),wand=!skill&&s.weapon?.subcategory==='wand',magical=!!skill?.magic||wand;
  const targetAbilities=b.opponentBuild?abilities(b.opponentBuild,d):[];
  let defense=skill?.magic?Math.max(0,t.magicDefense??0):effectiveMonsterDefense(magical?t.magicDefense??t.defense:t.defense,!!skill||wand);
  if(pvp){if(b.opponentBuild){const ob=b.opponentBuild,os=derive(ob,d),oc=d.class.find(x=>x.id===ob.classId)!,oa=targetAbilities;defense=effectivePlayerDefense({level:ob.level,sta:os.sta,dex:os.dex,int:os.int,classDefense:oc.defense,magicSta:oc.magicDefenseStaFactor,magicInt:oc.magicDefenseIntFactor,equipment:os.armorDefense,flat:getFlatAbility(oa,magical?'magicdefense':'def'),rate:getRateAbility(oa,'def'),magic:magical,skill:!!skill,pvp});}else defense=Math.floor((magical?t.magicDefense??t.defense:t.defense)*.6);}
- const weaponElement=resolveWeaponElement(s.weapon,b.equipment.rightHand),infusion=b.buffs.some(x=>x.id===12579)||b.support.buffSkills.some(x=>x.id===12579),effectiveElement=skill?resolveEffectiveSkillElement(skill.element??'none',weaponElement,infusion):weaponElement;
+ const weaponElement=resolveWeaponElement(s.weapon,b.equipment.rightHand),
+      infusion=hasActiveSkillFamily(b,d,12579),
+      effectiveElement=skill
+        ?resolveEffectiveSkillElement(skill.element??'none',weaponElement,infusion)
+        :weaponElement;
  const resistance=(element:Element)=>Number(t[('resist'+element[0].toUpperCase()+element.slice(1)) as keyof Target]??0);
  const el=skill?skillElementMultiplier(effectiveElement,weaponElement,resistance(effectiveElement),false):elementMultiplier(b,t,d),levelMultiplier=getLevelDifferenceDamageMultiplier(b.level,targetLevel,pvp);
  const incoming=Math.max(-50,getRateAbility(targetAbilities,'incomingdamage')),reduction=pvp?Math.min(50,b.opponentBuild?getRateAbility(targetAbilities,'pvpdamagereduction'):t.pvpReduction??0):0;

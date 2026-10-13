@@ -1,8 +1,59 @@
-import {lineage,type CharacterBuild,type GameData,type Skill} from './model';import {maxSkillLevel} from './ringmaster-buffs';import {compareDisplayName} from './catalog-sort';import {canUseSkillWithEquipment} from './skill-weapons';
-export function classProgression(classId:number,data:GameData){return lineage(classId,data).reverse().flatMap(id=>{const c=data.class.find(x=>x.id===id);return c?[c]:[];});}
-export function exactClassSkills(classId:number,data:GameData){return data.skill.filter(x=>x.class===classId).sort((a,b)=>compareDisplayName(a.name,b.name)||a.id-b.id);}
-export function getSkillTree(classId:number,data:GameData){const skills=exactClassSkills(classId,data),variationIds=new Set(skills.flatMap(x=>x.masterVariations??[])),normal=skills.filter(x=>!x.passive&&!variationIds.has(x.id)),passives=skills.filter(x=>x.passive),variations=data.skill.filter(x=>variationIds.has(x.id)).sort((a,b)=>compareDisplayName(a.name,b.name)||a.id-b.id);const positioned=normal.filter(x=>x.treePosition),connections=positioned.flatMap(skill=>(skill.requirements??[]).flatMap(req=>{const from=positioned.find(x=>x.id===req.skill);return from?[{from:from.id,to:skill.id,level:req.level}]:[]}));return {skills,normal,passives,variations,connections};}
-export function skillPrerequisiteReview(skill:Skill,build:CharacterBuild,data:GameData){return (skill.requirements??[]).map(req=>({...req,name:data.skill.find(x=>x.id===req.skill)?.name??`Skill #${req.skill}`,configuredLevel:build.skills.find(x=>x.id===req.skill)?.level??null}));}
-export function canSelectSimulationSkill(skill:Skill,build:CharacterBuild,data:GameData){return !skill.passive&&(!skill.class||lineage(build.classId,data).includes(skill.class))&&skill.level<=build.level&&skill.levels.some(x=>x.minAttack!==undefined||x.maxAttack!==undefined)&&canUseSkillWithEquipment(skill,build,data);}
-/** One damage skill plus configured passives remains the canonical b.skills meaning. */
-export function selectSimulationSkill(build:CharacterBuild,skill:Skill,level:number,data:GameData):CharacterBuild{if(!canSelectSimulationSkill(skill,build,data)||!skill.levels.some(x=>x.level===level)||level<1||level>maxSkillLevel(skill))throw Error('Skill is unavailable for this character, weapon or level.');return {...build,attackType:'skill',skills:[{id:skill.id,level},...build.skills.filter(x=>data.skill.find(s=>s.id===x.id)?.passive&&x.id!==skill.id)]};}
+import {lineage,type CharacterBuild,type GameData,type Skill} from './model';
+import {maxSkillLevel} from './ringmaster-buffs';
+import {compareDisplayName} from './catalog-sort';
+import {canUseSkillWithEquipment} from './skill-weapons';
+import {
+  canSelectDamageSkill,
+  getConfiguredSkillLevel,
+  setSimulationSkill,
+} from './skill-usage';
+
+export function classProgression(classId:number,data:GameData){
+  return lineage(classId,data).reverse().flatMap(id=>{
+    const value=data.class.find(row=>row.id===id);
+    return value?[value]:[];
+  });
+}
+
+export function exactClassSkills(classId:number,data:GameData){
+  return data.skill.filter(skill=>skill.class===classId).sort((a,b)=>compareDisplayName(a.name,b.name)||a.id-b.id);
+}
+
+export function getSkillTree(classId:number,data:GameData){
+  const skills=exactClassSkills(classId,data);
+  const variationIds=new Set(skills.flatMap(skill=>skill.masterVariations??[]));
+  const normal=skills.filter(skill=>!skill.passive&&!variationIds.has(skill.id));
+  const passives=skills.filter(skill=>skill.passive);
+  const variations=data.skill.filter(skill=>variationIds.has(skill.id)).sort((a,b)=>compareDisplayName(a.name,b.name)||a.id-b.id);
+  const positioned=normal.filter(skill=>skill.treePosition);
+  const connections=positioned.flatMap(skill=>(skill.requirements??[]).flatMap(requirement=>{
+    const from=positioned.find(candidate=>candidate.id===requirement.skill);
+    return from?[{from:from.id,to:skill.id,level:requirement.level}]:[];
+  }));
+  return {skills,normal,passives,variations,connections};
+}
+
+export function skillPrerequisiteReview(skill:Skill,build:CharacterBuild,data:GameData){
+  return (skill.requirements??[]).map(requirement=>({
+    ...requirement,
+    name:data.skill.find(candidate=>candidate.id===requirement.skill)?.name??`Skill #${requirement.skill}`,
+    configuredLevel:getConfiguredSkillLevel(requirement.skill,build,data),
+  }));
+}
+
+export function canSelectSimulationSkill(skill:Skill,build:CharacterBuild,data:GameData){
+  return canSelectDamageSkill(skill,build,data);
+}
+
+export function selectSimulationSkill(build:CharacterBuild,skill:Skill,level:number,data:GameData):CharacterBuild{
+  if(!skill.levels.some(row=>row.level===level)||level<1||level>maxSkillLevel(skill)){
+    throw Error('Skill level is unavailable.');
+  }
+  return setSimulationSkill(build,skill,level,data);
+}
+
+// Kept for consumers that only need the old direct compatibility question.
+export function skillWeaponAvailable(skill:Skill,build:CharacterBuild,data:GameData){
+  return canUseSkillWithEquipment(skill,build,data);
+}
+
