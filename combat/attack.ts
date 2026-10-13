@@ -1,3 +1,5 @@
+import {buildSkillWeaponContext,resolveSkillWeaponRequirement} from '../lib/skill-weapons';
+import {lineage} from '../lib/model';
 import {catalogSkill} from '../lib/catalog-index';
 import {isWeaponCompatibleWithSkills,getConfiguredUpgrade} from '../lib/item-rules';
 import {abilities,percent,clamp,derive,type Derived} from './character';
@@ -24,7 +26,7 @@ export function expectedDamage(normal:number,critical:number,hit:number,crit:num
 export function opponentTarget(b:CharacterBuild,d:GameData):Target{if(!b.opponentBuild)return b.opponent;const o=b.opponentBuild,s=derive(o,d);return {...b.opponent,name:o.name,level:o.level,hp:s.hp,defense:s.defense,magicDefense:s.magicDefense,dex:s.dex,parry:s.parry,block:s.block,criticalResist:s.critResist,pvpReduction:s.pvpReduction,minAttack:s.attackMin,maxAttack:s.attackMax};}
 export function calculate(b:CharacterBuild,d:GameData,override?:Target){
  const s=derive(b,d),a=abilities(b,d),t=override??(b.mode==='pvp'?opponentTarget(b,d):d.monster.find(x=>x.id===b.targetId)??d.monster[0]),pvp=b.mode==='pvp',targetLevel=t.level===-1?b.level:t.level;
- const chosen=b.skills.find(x=>!catalogSkill(d,x.id)?.passive),skill=b.attackType==='skill'?catalogSkill(d,chosen?.id):undefined,sl=skill?.levels.find(x=>x.level===chosen?.level),skillUsable=!skill||isWeaponCompatibleWithSkills(s.weapon,[skill]),wand=!skill&&s.weapon?.subcategory==='wand',magical=!!skill?.magic||wand;
+ const chosen=b.skills.find(x=>!catalogSkill(d,x.id)?.passive),skill=b.attackType==='skill'?catalogSkill(d,chosen?.id):undefined,sl=skill?.levels.find(x=>x.level===chosen?.level),skillUsable=!skill||!!sl&&(!skill.class||lineage(b.classId,d).includes(skill.class))&&skill.level<=b.level&&isWeaponCompatibleWithSkills(s.weapon,[skill],buildSkillWeaponContext(b,d)),wand=!skill&&s.weapon?.subcategory==='wand',magical=!!skill?.magic||wand;
  const targetAbilities=b.opponentBuild?abilities(b.opponentBuild,d):[];
  let defense=skill?.magic?Math.max(0,t.magicDefense??0):effectiveMonsterDefense(magical?t.magicDefense??t.defense:t.defense,!!skill||wand);
  if(pvp){if(b.opponentBuild){const ob=b.opponentBuild,os=derive(ob,d),oc=d.class.find(x=>x.id===ob.classId)!,oa=targetAbilities;defense=effectivePlayerDefense({level:ob.level,sta:os.sta,dex:os.dex,int:os.int,classDefense:oc.defense,magicSta:oc.magicDefenseStaFactor,magicInt:oc.magicDefenseIntFactor,equipment:os.armorDefense,flat:getFlatAbility(oa,magical?'magicdefense':'def'),rate:getRateAbility(oa,'def'),magic:magical,skill:!!skill,pvp});}else defense=Math.floor((magical?t.magicDefense??t.defense:t.defense)*.6);}
@@ -55,6 +57,7 @@ export function calculate(b:CharacterBuild,d:GameData,override?:Target){
   const afterElement=Math.floor(afterResistance*match);
   return {...modified,preElement,effectiveDefense,incomingMagic,postDefense,meleeElement,afterElement,damage:skillUsable?afterElement:0};
  };
+ if(skill&&resolveSkillWeaponRequirement(skill.weapon).status==='unsupported')notes.push('Unrecognized skill weapon requirement; check Data Health.');
  const rightMin=stages(main.min,el,g),rightMax=stages(main.max,el,g);
  const handFactor=(pvp?.6:1)*skillFactor*damageBonus*levelMultiplier,modeRate=pvp?s.pvp:s.pve,bossRate=!pvp&&['giant','boss','worldboss'].includes(t.rank)?s.boss:0;
  const finish=(value:number)=>finalizeDamage(value,modeRate,incoming,bossRate,reduction).final;
