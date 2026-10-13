@@ -35,6 +35,7 @@ Main-hand Skill Bonus behavior is unchanged: a configured left-hand bonus does n
 
 ## Changed files
 
+- `lib/catalog-items.ts`, `app/api/data/route.ts`: browser catalog projection now retains dismantle metadata, attack-speed coefficients and additional skill damage. The previous projection dropped these fields even though the synchronized records contained them.
 - `lib/item-variants.ts`, `lib/model.ts`: safe variant resolution, conversion/normalization, typed API dismantle shape.
 - `lib/skill-awake.ts`: shared rarity resolution and canonical imported-bonus matching.
 - `lib/persistence.ts`, `lib/equipment.ts`, `components/Laboratory.tsx`: catalog-backed saved-build normalization and explicit repair.
@@ -45,6 +46,6 @@ Main-hand Skill Bonus behavior is unchanged: a configured left-hand bonus does n
 
 ## Verification
 
-20 new regressions cover current Conch and Sirens links/pools, Electric Shock, Mentalist exclusion, Healing, validator/editor agreement, future exact Ultimate tiers, insertion-order-independent fallback, ambiguous/missing links, conversion preservation, actual Ultimate random-stat modifiers, schema-2/schema-3/opponent migration, deferred parsing, AI normalization, repair, independent picker IDs and main-hand behavior.
+21 new regressions cover current Conch and Sirens links/pools, Electric Shock, Mentalist exclusion, Healing, validator/editor agreement, future exact Ultimate tiers, insertion-order-independent fallback, ambiguous/missing links, conversion preservation, actual Ultimate random-stat modifiers, schema-2/schema-3/opponent migration, deferred parsing, AI normalization, repair, independent picker IDs and main-hand behavior.
 
-All 173 tests pass, including the prior 153. Typecheck, lint (zero errors, 35 existing warnings) and the production build passed. No preview website is created; publication updates the existing production Site.
+All 174 tests pass, including the prior 153. Typecheck, lint (zero errors, 35 existing warnings) and the production build passed. No preview website is created; publication updates the existing production Site.
