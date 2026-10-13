@@ -1,3 +1,4 @@
+import {remapItemBaseStatRolls} from './item-stat-ranges';
 import {catalogItem} from './catalog-index';
 import type {GameData,Gear,Item} from './model';
 type Catalog=Pick<GameData,'item'>;
@@ -34,7 +35,7 @@ export function configureUltimateWeapon(item:Item,gear:Gear,d:Catalog):Gear{
  if(item.category!=='weapon'||(item.rarity!=='ultimate'&&!item.ultimateConvertible))throw Error('This weapon cannot be configured as Ultimate.');
  const counterpart=getUltimateWeaponVariant(item,d);
  const next:Gear={...gear,itemId:counterpart?.id??item.id,ultimateWeapon:{ultimateUpgrade:0,jewels:[],bonuses:{base:[]}}};
- delete next.normalUpgrade;delete next.upgrade;return next;
+ delete next.normalUpgrade;delete next.upgrade;return counterpart?remapItemBaseStatRolls(item,counterpart,next).gear:next;
 }
 /** Legacy normalization retains the complete existing Ultimate configuration. */
 export function normalizeUltimateGear(item:Item,gear:Gear,d:Catalog):{gear:Gear;note?:string}{
@@ -42,5 +43,6 @@ export function normalizeUltimateGear(item:Item,gear:Gear,d:Catalog):{gear:Gear;
  const counterpart=getUltimateWeaponVariant(item,d);
  if(!counterpart)return {gear,note:`${item.name}: no unambiguous Ultimate counterpart is available. The legacy item ID and Ultimate configuration were preserved.`};
  const next={...gear,itemId:counterpart.id};delete next.normalUpgrade;delete next.upgrade;
- return {gear:next,note:`${item.name}: normalized legacy Ultimate weapon ${item.id} to official Ultimate item ${counterpart.id}; configured weapon properties were preserved.`};
+ const remapped=remapItemBaseStatRolls(item,counterpart,next);
+ return {gear:remapped.gear,note:`${item.name}: normalized legacy Ultimate weapon ${item.id} to official Ultimate item ${counterpart.id}; configured weapon properties were preserved. ${remapped.warnings.join(' ')}`};
 }

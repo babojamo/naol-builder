@@ -1,0 +1,4 @@
+import type {Item} from './model';import {resolveRangeStep} from './item-stat-ranges';
+export type UltimateBonusSlot='base1'|'base2'|'plus6'|'plus10';
+/** API supplies one table. Later-slot reduction/rounding is not a separate authoritative API rule. */
+export function getUltimateBonusAllowedRange(item:Item,slot:UltimateBonusSlot,parameter:string,rate:boolean){const ability=item.possibleRandomStats?.find(x=>x.parameter===parameter&&!!x.rate===rate);if(ability?.add===undefined)return;const min=Math.min(ability.add,ability.addMax??ability.add),max=Math.max(ability.add,ability.addMax??ability.add);return {min,max,step:resolveRangeStep(min,max),confidence:slot==='plus6'||slot==='plus10'?'unverified' as const:'verified' as const,source:'Official API possibleRandomStats (shared table)',reference:'Flyffulator uses step-rounded half values for later slots; exact game rounding remains unverified.'};}

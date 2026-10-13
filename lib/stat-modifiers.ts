@@ -1,3 +1,4 @@
+import {getConfiguredItemAbilities,getItemAbilityRange} from './item-stat-ranges';
 import {canUseActiveItem,getActiveItemAbilities} from './active-items';
 import {canUseSkillWithEquipment} from './skill-weapons';
 import {getRaisedPetBonus} from './raised-pets';
@@ -11,7 +12,7 @@ import {resolveCanonicalParameter} from './stat-parameters';
 import {getAdditionalStatAbilities,canReceiveAdditionalStat,validateAdditionalStat} from './additional-stat';
 import {slots,type Ability,type CharacterBuild,type GameData,type Slot} from './model';
 
-export type ModifierSourceType='base'|'allocated'|'item'|'normal-upgrade'|'set'|'set-upgrade'|'accessory'|'accessory-upgrade'|'ultimate-accessory'|'ultimate-weapon'|'ultimate-jewel'|'ultimate-rune'|'stat-awakening'|'weapon-bonus'|'piercing'|'fashion-blessing'|'active-item'|'pet'|'skill'|'buff'|'manual'|'other';
+export type ModifierSourceType='base'|'allocated'|'item'|'item-base-roll'|'normal-upgrade'|'set'|'set-upgrade'|'accessory'|'accessory-upgrade'|'ultimate-accessory'|'ultimate-weapon'|'ultimate-jewel'|'ultimate-rune'|'stat-awakening'|'weapon-bonus'|'piercing'|'fashion-blessing'|'active-item'|'pet'|'skill'|'buff'|'manual'|'other';
 export type ModifierConfidence='verified'|'estimated'|'unsupported';
 export interface StatModifier{parameter:string;rawParameter:string;value:number;operation:'flat'|'rate'|'set';sourceType:ModifierSourceType;sourceId?:string|number;sourceName?:string;slot?:Slot;confidence:ModifierConfidence;pvp?:boolean;pve?:boolean;rawAbility?:Ability;}
 
@@ -24,9 +25,9 @@ export function collectCharacterModifiers(build:CharacterBuild,data:GameData):St
  for(const itemId of new Set((build.activeItems??[]).map(x=>x.itemId))){const item=catalogItem(data,itemId);if(item&&canUseActiveItem(item,build,data))out.push(...getActiveItemAbilities(item).map(a=>modifier(a,'active-item',{sourceId:item.id,sourceName:item.name})));}
  const ids:number[]=[],usedRunes=new Set<number>();
  for(const slot of slots){const gear=build.equipment[slot];if(!gear)continue;const item=catalogItem(data,gear.itemId);if(!item||(!build.theoretical&&(!canEquipItem(build,item,data,slot)||isAccessory(item)&&!canEquipAccessory(build.level,item,getConfiguredUpgrade(item,gear)))))continue;ids.push(item.id);const itemMeta={slot,sourceId:item.id,sourceName:item.name};
-  const baseAbilities=isAccessory(item)?getAccessoryAbilities(item,getConfiguredUpgrade(item,gear)):item.abilities??[];
+  const baseAbilities=isAccessory(item)?getAccessoryAbilities(item,getConfiguredUpgrade(item,gear)):getConfiguredItemAbilities(item,gear);
   out.push(...weaponBonusAbility({...build,equipment:{[slot]:gear}},data).map(a=>modifier(a,'weapon-bonus',{...itemMeta,sourceName:item.name+' Weapon Bonus'})));
-  out.push(...baseAbilities.map(a=>modifier(a,isAccessory(item)?'accessory-upgrade':'item',itemMeta)));
+  out.push(...baseAbilities.map((a,index)=>{const rolled=!isAccessory(item)&&!!getItemAbilityRange(item,index)&&gear.baseStatRolls?.some(x=>x.abilityIndex===index);return modifier(a,isAccessory(item)?'accessory-upgrade':rolled?'item-base-roll':'item',{...itemMeta,sourceName:rolled?item.name+' — Base Roll':item.name});}));
   if(gear.ultimateWeapon){const config=gear.ultimateWeapon,active=getActiveUltimateSockets(item,gear);for(const socket of config.jewels.filter(x=>x.index<active)){const jewel=catalogItem(data,socket.content.itemId);out.push(...getUltimateAbilities(item,{...gear,ultimateWeapon:{...config,jewels:[socket],bonuses:{base:[]}}},data,usedRunes).map(a=>modifier(a,socket.content.kind==='rune'?'ultimate-rune':'ultimate-jewel',{...itemMeta,sourceId:socket.content.itemId,sourceName:jewel?.name??'Ultimate socket'},'verified')));}out.push(...getUltimateAbilities(item,{...gear,ultimateWeapon:{...config,jewels:[]}},data,usedRunes).map(a=>modifier(a,'ultimate-weapon',{...itemMeta,sourceName:item.name+' Ultimate bonus'},'verified')));}
   const additional=validateAdditionalStat(item,gear.additionalStat,data).length?[]:getAdditionalStatAbilities(gear.additionalStat,data),legacy=gear.additionalStat||!canReceiveAdditionalStat(item)?[]:gear.awake===null?[]:data.statawake[gear.awake]?.abilities??[];
   out.push(...(additional.length?additional:legacy).map(a=>modifier(a,'stat-awakening',{...itemMeta,sourceId:gear.additionalStat?.awakeId??gear.awake??undefined,sourceName:'Additional Stat'})));

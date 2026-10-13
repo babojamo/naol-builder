@@ -1,7 +1,7 @@
 import {buildSkillWeaponContext,resolveSkillWeaponRequirement} from '../lib/skill-weapons';
 import {lineage} from '../lib/model';
 import {catalogSkill} from '../lib/catalog-index';
-import {isWeaponCompatibleWithSkills,getConfiguredUpgrade} from '../lib/item-rules';
+import {isWeaponCompatibleWithSkills,getWeaponAttackUpgrade} from '../lib/item-rules';
 import {abilities,percent,clamp,derive,type Derived} from './character';
 import {mainHandSkillBonus} from '../lib/skill-awake';
 import {getFlatAbility,getRateAbility} from '../lib/stat-parameters';
@@ -39,7 +39,7 @@ export function calculate(b:CharacterBuild,d:GameData,override?:Target){
  const attackRate=getRateAbility(a,'attack'),skillRate=skill?getRateAbility(a,'skilldamage'):0,thirdJobRate=skill&&d.class.find(x=>x.id===skill.class)?.type==='specialist'?getRateAbility(a,'thirdjobskilldamage'):0;
  const magicDefenseRate=skill?.magic?getRateAbility(targetAbilities,'magicdefense'):0;
  let main={min:s.rightAttack.rawMin,max:s.rightAttack.rawMax},notes:string[]=[];
- const weapon=s.weapon,g=b.equipment.rightHand,upgrade=weapon&&g?getConfiguredUpgrade(weapon,g):0,effectiveUpgrade=g?.ultimateWeapon||weapon?.rarity==='ultimate'?upgrade+10:upgrade,up=d.upgradelevelbonus.find(x=>x.upgradeLevel===effectiveUpgrade),weaponRange=upgradedSkillWeapon((weapon?.minAttack??1)+getFlatAbility(a,'minability'),(weapon?.maxAttack??2)+getFlatAbility(a,'maxability'),1+(up?.weaponAttack??0)/100,effectiveUpgrade);
+ const weapon=s.weapon,g=b.equipment.rightHand,attackUpgrade=getWeaponAttackUpgrade(weapon,g,d),effectiveUpgrade=attackUpgrade.upgradeLevel,up=attackUpgrade.row,weaponRange=upgradedSkillWeapon((weapon?.minAttack??1)+getFlatAbility(a,'minability'),(weapon?.maxAttack??2)+getFlatAbility(a,'maxability'),1+(up?.weaponAttack??0)/100,effectiveUpgrade);
  if(skill&&sl){const power=calculateSkillPower({weapon:weaponRange,additionalSkillDamage:Number(weapon?.additionalSkillDamage??0),skill,level:sl,selectedLevel:sl.level,stats:s,abilities:a,family:weapon?.subcategory??'hand',build:b,data:d});main=power;notes=power.notes;}
  else if(wand){const c=d.class.find(x=>x.id===b.classId)!;const extra=weaponStatContribution('wand',s,b.level,c.autoAttackFactors.wand,getFlatAbility(a,'wandattack'))+getFlatAbility(a,'damage');main={min:(weaponRange.min+extra)*.6,max:(weaponRange.max+extra)*.6};notes.push('Normal uncharged wand attacks; charging remains unsupported.');}
  const modifier=mode*skillFactor*damageBonus;
