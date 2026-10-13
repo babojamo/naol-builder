@@ -47,5 +47,5 @@ export function collectCharacterModifiers(build:CharacterBuild,data:GameData):St
  return out.filter(m=>build.mode==='pvp'?m.pvp!==false:m.pve!==false);
 }
 
-export function modifiersToAbilities(modifiers:StatModifier[]):Ability[]{return modifiers.filter(m=>!['base','allocated'].includes(m.sourceType)&&m.confidence!=='unsupported').map(m=>m.rawAbility&&m.parameter===m.rawParameter?m.rawAbility:{parameter:m.parameter,...(m.operation==='set'?{set:m.value}:{add:m.value,rate:m.operation==='rate'}),pvp:m.pvp,pve:m.pve});}
+export function modifiersToAbilities(modifiers:StatModifier[]):Ability[]{return modifiers.filter(m=>!['base','allocated'].includes(m.sourceType)&&m.confidence!=='unsupported').map(m=>m.rawAbility&&m.parameter===m.rawParameter?m.rawAbility:{parameter:m.parameter,...(m.operation==='set'?{set:m.value}:{add:m.value,rate:m.operation==='rate'}),pvp:m.pvp,pve:m.pve,skill:m.rawAbility?.skill});}
 
