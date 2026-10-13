@@ -1,3 +1,4 @@
+import {getRaisedPetBonus} from './raised-pets';
 import {catalogItem,catalogSkill} from './catalog-index';
 import {calculateEquipmentSetBonuses,canEquipAccessory,getAccessoryAbilities,isAccessory} from './accessories';
 import {getEffectiveSetUpgradeLevel,canEquipItem} from './equipment';
@@ -38,7 +39,7 @@ export function collectCharacterModifiers(build:CharacterBuild,data:GameData):St
  out.push(...(setUpgrade?.setAbilities??[]).map(a=>modifier(a,'set-upgrade',{sourceId:effective,sourceName:`Armor set +${effective}`})));
  const selfSkills=[...build.buffs.map(x=>({...x,sourceType:'buff' as const})),...build.support.buffSkills.filter(x=>catalogSkill(data,x.id)?.target==='currentplayer').map(x=>({...x,sourceType:'buff' as const})),...build.skills.filter(x=>catalogSkill(data,x.id)?.passive).map(x=>({...x,sourceType:'skill' as const}))];
  for(const selected of selfSkills){const skill=catalogSkill(data,selected.id);if(skill)out.push(...[...(skill.abilities??[]),...(skill.levels.find(x=>x.level===selected.level)?.abilities??[])].map(a=>modifier(a,selected.sourceType,{sourceId:skill.id,sourceName:skill.name})));}
- if(build.pet){const pet=data.raisedpet.find(x=>x.petItemId===build.pet!.id);if(pet?.values)out.push(modifier({parameter:pet.parameter,rate:pet.rate,add:pet.values[build.pet.level]??0},'pet',{sourceId:pet.petItemId,sourceName:'Raised pet'}));}
+ if(build.pet){const pet=data.raisedpet.find(x=>x.petItemId===build.pet!.id);const bonus=getRaisedPetBonus(build.pet,pet);if(!bonus.errors.length)out.push(modifier({parameter:bonus.parameter,rate:bonus.rate,add:bonus.total},'pet',{sourceId:pet!.petItemId,sourceName:'Raised Pet — '+(data.item.find(x=>x.id===pet!.petItemId)?.name??'#'+pet!.petItemId)}));}
  return out.filter(m=>build.mode==='pvp'?m.pvp!==false:m.pve!==false);
 }
 
