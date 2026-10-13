@@ -1,21 +1,23 @@
-import {appendFileSync,readFileSync} from 'node:fs';
+import {loadGameDataTools} from './load-game-data-tools.mjs';
+const {getFashionBlessingOperation}=await loadGameDataTools();
 process.loadEnvFile('.env.migration');process.loadEnvFile('.env.supabase');
 const ref=process.argv[2];if(!/^[a-z0-9]{20}$/.test(ref??''))throw Error('Verified Supabase project reference required');
 const source='https://universe.flyff.com/index.php/news/muransawakeningexpansionv155';
 const rows=[];
-const add=(parameter,goddess,demon,kind='flat')=>{
- const goddessAppearance=parameter==='pvedamagereduction'?4.762:4.7619,demonAppearance=parameter==='pvedamagereduction'?4.762:4.7619;
- const gProb=goddess.length===5?[60,25,10,2.5,2.5]:goddess.length===3&&['speed','attackspeed','castingspeed','parry','meleeblock','rangedblock'].includes(parameter)?[90,7.5,2.5]:goddess.length===4?[60,25,10,5]:[60,25,10,2.5,2.5];
- const dProb=demon.length===6?[80,11,5,2,1.5,.5]:demon.length===5?[80,11,5,2,2]:demon.length===4&&['speed','attackspeed','castingspeed','actionspeed','parry','meleeblock','rangedblock'].includes(parameter)?[60,25,10,5]:demon.length===4?[80,11,5,2]:[80,11,5,2,1.5,.5];
- for(const [blessing_type,values,probs,appearance_probability] of [['goddess',goddess,gProb,goddessAppearance],['demon',demon,dProb,demonAppearance]])values.forEach((value,i)=>rows.push({blessing_type,parameter,value,appearance_probability,value_probability:probs[i],game_version:'1.5.5',effective_from:'2026-07-30',source_reference:source,active:true}));
+const add=(parameter,goddess,demon)=>{
+ const operation=getFashionBlessingOperation(parameter);if(operation===undefined)throw Error('Unknown Fashion Blessing operation: '+parameter);
+ const goddessAppearance=parameter==='pveincomingdamage'?4.762:4.7619,demonAppearance=parameter==='pveincomingdamage'?4.762:4.7619;
+ const gProb=goddess.length===5?[60,25,10,2.5,2.5]:goddess.length===3&&['speed','attackspeed','decreasedcastingtime','parry','meleeblock','rangedblock'].includes(parameter)?[90,7.5,2.5]:goddess.length===4?[60,25,10,5]:[60,25,10,2.5,2.5];
+ const dProb=demon.length===6?[80,11,5,2,1.5,.5]:demon.length===5?[80,11,5,2,2]:demon.length===4&&['speed','attackspeed','decreasedcastingtime','actionspeed','parry','meleeblock','rangedblock'].includes(parameter)?[60,25,10,5]:demon.length===4?[80,11,5,2]:[80,11,5,2,1.5,.5];
+ for(const [blessing_type,values,probs,appearance_probability] of [['goddess',goddess,gProb,goddessAppearance],['demon',demon,dProb,demonAppearance]])values.forEach((value,i)=>rows.push({blessing_type,parameter,value,rate:operation==='rate',appearance_probability,value_probability:probs[i],game_version:'1.5.5',effective_from:'2026-07-30',source_reference:source,active:true}));
 };
 for(const p of ['str','dex','int','sta'])add(p,[1,2,3,4,6],[0,1,2,3,4,5]);
 for(const p of ['criticalchance','criticaldamage'])add(p,[.5,1,1.5,2,3],[0,.5,1,1.5,2,2.5]);
-for(const p of ['speed','attackspeed'])add(p,[1,2,3.5],[0,1,2,3]);add('castingspeed',[1,2,4],[0,1,2,3]);add('actionspeed',[1,2,3,4],[0,1,2,3]);
+for(const p of ['speed','attackspeed'])add(p,[1,2,3.5],[0,1,2,3]);add('decreasedcastingtime',[1,2,4],[0,1,2,3]);add('actionspeed',[1,2,3,4],[0,1,2,3]);
 add('def',[2,6,10,14,22],[0,2,6,10,14,18]);add('attack',[5,9,13,17,25],[0,5,9,13,17,21]);
 for(const p of ['maxhp','maxmp','maxfp'])add(p,[12,20,28,37,55],[0,12,20,28,37,46]);add('magicdefense',[2,6,10,14,22],[0,2,6,10,14,18]);
 for(const p of ['parry','meleeblock','rangedblock'])add(p,[1,2,4],[0,1,2,3]);
-add('pvedamage',[10,15,20,25,35],[0,10,15,20,25,30]);add('pvedamagereduction',[10,15,20,25,35],[0,10,15,20,25,30]);
+add('pvedamage',[10,15,20,25,35],[0,10,15,20,25,30]);add('pveincomingdamage',[10,15,20,25,35],[0,10,15,20,25,30]);
 const result=await fetch(process.env.SUPABASE_URL+'/rest/v1/flyff_fashion_blessing_rules?on_conflict=blessing_type,parameter,value,game_version',{method:'POST',headers:{apikey:process.env.SUPABASE_SERVICE_ROLE_KEY,Authorization:'Bearer '+process.env.SUPABASE_SERVICE_ROLE_KEY,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(rows)});
 if(!result.ok)throw Error('Blessing rule seed failed with HTTP '+result.status);
 console.log(JSON.stringify({rules:rows.length,version:'1.5.5',effectiveFrom:'2026-07-30',source,seeded:true}));

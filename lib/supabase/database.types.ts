@@ -288,6 +288,7 @@ export type Database = {
       }
       flyff_fashion_blessing_rules: {
         Row: {
+          rate: boolean | null
           active: boolean
           appearance_probability: number
           blessing_type: string
@@ -302,6 +303,7 @@ export type Database = {
           value_probability: number
         }
         Insert: {
+          rate?: boolean | null
           active?: boolean
           appearance_probability: number
           blessing_type: string
@@ -316,6 +318,7 @@ export type Database = {
           value_probability: number
         }
         Update: {
+          rate?: boolean | null
           active?: boolean
           appearance_probability?: number
           blessing_type?: string

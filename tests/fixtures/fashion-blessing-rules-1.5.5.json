@@ -1,0 +1,379 @@
+{
+  "source": "https://universe.flyff.com/index.php/news/muransawakeningexpansionv155",
+  "gameVersion": "1.5.5",
+  "effectiveFrom": "2026-07-30",
+  "rules": [
+    {
+      "parameter": "actionspeed",
+      "rate": true,
+      "goddess": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "demon": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "parameter": "attack",
+      "rate": false,
+      "goddess": [
+        5,
+        9,
+        13,
+        17,
+        25
+      ],
+      "demon": [
+        0,
+        5,
+        9,
+        13,
+        17,
+        21
+      ]
+    },
+    {
+      "parameter": "attackspeed",
+      "rate": true,
+      "goddess": [
+        1,
+        2,
+        3.5
+      ],
+      "demon": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "parameter": "criticalchance",
+      "rate": true,
+      "goddess": [
+        0.5,
+        1,
+        1.5,
+        2,
+        3
+      ],
+      "demon": [
+        0,
+        0.5,
+        1,
+        1.5,
+        2,
+        2.5
+      ]
+    },
+    {
+      "parameter": "criticaldamage",
+      "rate": true,
+      "goddess": [
+        0.5,
+        1,
+        1.5,
+        2,
+        3
+      ],
+      "demon": [
+        0,
+        0.5,
+        1,
+        1.5,
+        2,
+        2.5
+      ]
+    },
+    {
+      "parameter": "decreasedcastingtime",
+      "rate": true,
+      "goddess": [
+        1,
+        2,
+        4
+      ],
+      "demon": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "parameter": "def",
+      "rate": false,
+      "goddess": [
+        2,
+        6,
+        10,
+        14,
+        22
+      ],
+      "demon": [
+        0,
+        2,
+        6,
+        10,
+        14,
+        18
+      ]
+    },
+    {
+      "parameter": "dex",
+      "rate": false,
+      "goddess": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "demon": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "parameter": "int",
+      "rate": false,
+      "goddess": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "demon": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "parameter": "magicdefense",
+      "rate": false,
+      "goddess": [
+        2,
+        6,
+        10,
+        14,
+        22
+      ],
+      "demon": [
+        0,
+        2,
+        6,
+        10,
+        14,
+        18
+      ]
+    },
+    {
+      "parameter": "maxfp",
+      "rate": false,
+      "goddess": [
+        12,
+        20,
+        28,
+        37,
+        55
+      ],
+      "demon": [
+        0,
+        12,
+        20,
+        28,
+        37,
+        46
+      ]
+    },
+    {
+      "parameter": "maxhp",
+      "rate": false,
+      "goddess": [
+        12,
+        20,
+        28,
+        37,
+        55
+      ],
+      "demon": [
+        0,
+        12,
+        20,
+        28,
+        37,
+        46
+      ]
+    },
+    {
+      "parameter": "maxmp",
+      "rate": false,
+      "goddess": [
+        12,
+        20,
+        28,
+        37,
+        55
+      ],
+      "demon": [
+        0,
+        12,
+        20,
+        28,
+        37,
+        46
+      ]
+    },
+    {
+      "parameter": "meleeblock",
+      "rate": true,
+      "goddess": [
+        1,
+        2,
+        4
+      ],
+      "demon": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "parameter": "parry",
+      "rate": true,
+      "goddess": [
+        1,
+        2,
+        4
+      ],
+      "demon": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "parameter": "pvedamage",
+      "rate": false,
+      "goddess": [
+        10,
+        15,
+        20,
+        25,
+        35
+      ],
+      "demon": [
+        0,
+        10,
+        15,
+        20,
+        25,
+        30
+      ]
+    },
+    {
+      "parameter": "pveincomingdamage",
+      "rate": false,
+      "goddess": [
+        10,
+        15,
+        20,
+        25,
+        35
+      ],
+      "demon": [
+        0,
+        10,
+        15,
+        20,
+        25,
+        30
+      ]
+    },
+    {
+      "parameter": "rangedblock",
+      "rate": true,
+      "goddess": [
+        1,
+        2,
+        4
+      ],
+      "demon": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "parameter": "speed",
+      "rate": true,
+      "goddess": [
+        1,
+        2,
+        3.5
+      ],
+      "demon": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "parameter": "sta",
+      "rate": false,
+      "goddess": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "demon": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "parameter": "str",
+      "rate": false,
+      "goddess": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "demon": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    }
+  ]
+}

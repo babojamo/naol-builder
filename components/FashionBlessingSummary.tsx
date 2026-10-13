@@ -1,0 +1,3 @@
+import type {GameData,Gear,Item,Slot} from '../lib/model';
+import {canReceiveFashionBlessing,formatFashionBlessing} from '../lib/fashion';
+export default function FashionBlessingSummary({item,gear,slot,data}:{item:Item;gear:Gear|undefined;slot:Slot;data:GameData}){if(!canReceiveFashionBlessing(item,slot)||!gear?.fashionBlessings?.length)return null;return <span className="fashion-blessing-summary">{gear.fashionBlessings.slice(0,2).map((line,index)=><small key={index}>{line.source==='unknown'?'Blessing':line.source==='goddess'?'Goddess':'Demon'}: {formatFashionBlessing(line,data.fashionBlessingRules??[])}</small>)}</span>;}
